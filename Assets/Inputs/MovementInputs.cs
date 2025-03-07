@@ -44,6 +44,15 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Robot"",
+                    ""type"": ""Button"",
+                    ""id"": ""0dc31bcf-f092-4e18-b5e8-1d464dcf9cf4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -112,6 +121,17 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
                     ""action"": ""CycleCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9eada850-7bb9-4448-b1d5-885f106c280e"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Robot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -122,6 +142,7 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
         m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
         m_Default_Directional = m_Default.FindAction("Directional", throwIfNotFound: true);
         m_Default_CycleCamera = m_Default.FindAction("CycleCamera", throwIfNotFound: true);
+        m_Default_Robot = m_Default.FindAction("Robot", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -185,12 +206,14 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
     private List<IDefaultActions> m_DefaultActionsCallbackInterfaces = new List<IDefaultActions>();
     private readonly InputAction m_Default_Directional;
     private readonly InputAction m_Default_CycleCamera;
+    private readonly InputAction m_Default_Robot;
     public struct DefaultActions
     {
         private @MovementInputs m_Wrapper;
         public DefaultActions(@MovementInputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @Directional => m_Wrapper.m_Default_Directional;
         public InputAction @CycleCamera => m_Wrapper.m_Default_CycleCamera;
+        public InputAction @Robot => m_Wrapper.m_Default_Robot;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -206,6 +229,9 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
             @CycleCamera.started += instance.OnCycleCamera;
             @CycleCamera.performed += instance.OnCycleCamera;
             @CycleCamera.canceled += instance.OnCycleCamera;
+            @Robot.started += instance.OnRobot;
+            @Robot.performed += instance.OnRobot;
+            @Robot.canceled += instance.OnRobot;
         }
 
         private void UnregisterCallbacks(IDefaultActions instance)
@@ -216,6 +242,9 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
             @CycleCamera.started -= instance.OnCycleCamera;
             @CycleCamera.performed -= instance.OnCycleCamera;
             @CycleCamera.canceled -= instance.OnCycleCamera;
+            @Robot.started -= instance.OnRobot;
+            @Robot.performed -= instance.OnRobot;
+            @Robot.canceled -= instance.OnRobot;
         }
 
         public void RemoveCallbacks(IDefaultActions instance)
@@ -237,5 +266,6 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
     {
         void OnDirectional(InputAction.CallbackContext context);
         void OnCycleCamera(InputAction.CallbackContext context);
+        void OnRobot(InputAction.CallbackContext context);
     }
 }
