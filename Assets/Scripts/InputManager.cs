@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputManager : MonoBehaviour
+public class InputManager : CryptidUtils
 {
     public static InputManager Instance;
     private static MovementInputs inputs;

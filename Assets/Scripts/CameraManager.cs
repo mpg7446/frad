@@ -1,34 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class CameraManager : MonoBehaviour
+public class CameraManager : CryptidUtils
 {
     public static CameraManager Instance;
     [SerializeField] private GameObject cam;
-    public GameObject screen;
-    public RenderTexture screenTexture;
-    public RenderTexture switchingTexture;
+    [SerializeField] private GameObject screen;
+    [SerializeField] private Material screenMat;
+    public Texture screenTexture { get; private set; }
+    public Texture switchingTexture;
     public GameObject robot;
     [SerializeField] private GameObject[] cameras;
     [SerializeField] private int selectedCamera = 0;
     [SerializeField] private bool viewingRobot = false;
+    private int cooldown;
 
-    void Start()
+    private void Start()
     {
         // Setup
         Instance = this;
+        screenMat = screen.GetComponent<Renderer>().material;
+        try {
+            screenTexture = screenMat.GetTexture("_EmissionMap");
+        } catch {
+            LogWarning("Could not find current screen render texture, is it missing?");
+        }
+
         if (cam == null)
-            cam = this.gameObject;
+            cam = gameObject;
         if (cameras == null)
-            Debug.LogError("CameraManager: No cameras provided!");
+            LogError("No cameras provided!");
 
         transformCamera(cameras[selectedCamera].transform);
+        RobotManager.Instance.lockCamera = true;
+    }
+    private void FixedUpdate()
+    {
+        if (cooldown > 0)
+            cooldown--;
     }
 
     public void CycleCamera()
     {
+        if (cooldown > 0)
+            return;
+        cooldown = 30;
+
         selectedCamera++;
         if (selectedCamera >= cameras.Length)
             selectedCamera = 0;
@@ -37,20 +57,43 @@ public class CameraManager : MonoBehaviour
     }
     public void RobotView()
     {
+        if (cooldown > 0)
+            return;
+        cooldown = 30;
+
         viewingRobot = !viewingRobot;
         if (viewingRobot)
+        {
             transformCamera(robot.transform);
+            RobotManager.Instance.lockCamera = false;
+        }
         else
+        {
             transformCamera(cameras[selectedCamera].transform);
+            RobotManager.Instance.lockCamera = true;
+        }
     }
 
     private void transformCamera(Transform transform)
     {
+        StartCoroutine(toStaticScreen(0.6f));
         viewingRobot = false;
         cam.transform.SetParent(transform);
-        cam.transform.localPosition = transform.localPosition;
-        cam.transform.localRotation = transform.localRotation;
+        cam.transform.position = transform.position;
+        cam.transform.rotation = transform.rotation;
     }
 
+    private IEnumerator toStaticScreen(float time)
+    {
+        //Log("pissing myself rn (attempting to show static screen)");
+        try {
+            screenMat.SetTexture("_EmissionMap",switchingTexture);
+        } catch {
+            LogWarning("Failed to access switchingTexture, is it missing?");
+        }
+
+        yield return new WaitForSeconds(time);
+        screenMat.SetTexture("_EmissionMap", screenTexture);
+    }
 
 }
