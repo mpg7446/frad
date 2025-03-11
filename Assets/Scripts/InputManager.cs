@@ -8,7 +8,7 @@ public class InputManager : CryptidUtils
 {
     public static InputManager Instance;
     private static MovementInputs inputs;
-    public Vector2 movement;
+    public Vector3 movement;
 
     void Start()
     {
@@ -28,11 +28,15 @@ public class InputManager : CryptidUtils
         inputs.Enable();
     }
 
-    private void DirectionalPerformed(InputAction.CallbackContext ctx) { movement = ctx.ReadValue<Vector2>(); }
-    private void DirectionalCanceled(InputAction.CallbackContext ctx) { movement = Vector2.zero; }
-    private void CycleCameraPerformed(InputAction.CallbackContext ctx) { CameraManager.Instance.CycleCamera(); }
+    private void DirectionalPerformed(InputAction.CallbackContext ctx) 
+    { 
+        Vector2 mv = ctx.ReadValue<Vector2>();
+        movement = new Vector3(mv.x, 0, mv.y);
+    }
+    private void DirectionalCanceled(InputAction.CallbackContext ctx) { movement = Vector3.zero; }
+    private void CycleCameraPerformed(InputAction.CallbackContext ctx) { ConsoleManager.Instance.CycleCamera(); }
     private void CycleCameraCanceled(InputAction.CallbackContext ctx) { }
-    private void RobotPerformed(InputAction.CallbackContext ctx) { CameraManager.Instance.RobotView(); }
+    private void RobotPerformed(InputAction.CallbackContext ctx) { PlayerManager.Instance.ToggleConsole(); }
     private void RobotCanceled(InputAction.CallbackContext ctx) { }
 
 }

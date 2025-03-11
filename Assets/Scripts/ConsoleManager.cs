@@ -4,19 +4,22 @@ using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class CameraManager : CryptidUtils
+public class ConsoleManager : CryptidUtils
 {
-    public static CameraManager Instance;
+    // Objects
+    public static ConsoleManager Instance;
     [SerializeField] private GameObject cam;
     [SerializeField] private GameObject screen;
+
+    // Materials
     [SerializeField] private Material screenMat;
-    public Texture screenTexture { get; private set; }
-    public Texture switchingTexture;
-    public GameObject robot;
+    [SerializeField] private Texture screenTexture;
+    [SerializeField] private Texture switchingTexture;
+
+    // Cameras
     [SerializeField] private GameObject[] cameras;
     [SerializeField] private int selectedCamera = 0;
-    [SerializeField] private bool viewingRobot = false;
-    private int cooldown;
+    private int cameraCooldown;
 
     private void Start()
     {
@@ -35,19 +38,18 @@ public class CameraManager : CryptidUtils
             LogError("No cameras provided!");
 
         transformCamera(cameras[selectedCamera].transform);
-        RobotManager.Instance.lockCamera = true;
     }
     private void FixedUpdate()
     {
-        if (cooldown > 0)
-            cooldown--;
+        if (cameraCooldown > 0)
+            cameraCooldown--;
     }
 
     public void CycleCamera()
     {
-        if (cooldown > 0)
+        if (cameraCooldown > 0)
             return;
-        cooldown = 30;
+        cameraCooldown = 30;
 
         selectedCamera++;
         if (selectedCamera >= cameras.Length)
@@ -55,35 +57,37 @@ public class CameraManager : CryptidUtils
 
         transformCamera(cameras[selectedCamera].transform);
     }
-    public void RobotView()
-    {
-        if (cooldown > 0)
-            return;
-        cooldown = 30;
 
-        viewingRobot = !viewingRobot;
-        if (viewingRobot)
-        {
-            transformCamera(robot.transform);
-            RobotManager.Instance.lockCamera = false;
-        }
-        else
-        {
-            transformCamera(cameras[selectedCamera].transform);
-            RobotManager.Instance.lockCamera = true;
-        }
-    }
+    // System no longer in use
+    //public void RobotView()
+    //{
+    //    if (cooldown > 0)
+    //        return;
+    //    cooldown = 30;
+
+    //    viewingRobot = !viewingRobot;
+    //    if (viewingRobot)
+    //    {
+    //        transformCamera(player.transform);
+    //        PlayerManager.Instance.lockCamera = false;
+    //    }
+    //    else
+    //    {
+    //        transformCamera(cameras[selectedCamera].transform);
+    //        PlayerManager.Instance.lockCamera = true;
+    //    }
+    //}
 
     private void transformCamera(Transform transform)
     {
         StartCoroutine(toStaticScreen(0.6f));
-        viewingRobot = false;
+        //viewingRobot = false;
         cam.transform.SetParent(transform);
         cam.transform.position = transform.position;
         cam.transform.rotation = transform.rotation;
     }
 
-    private IEnumerator toStaticScreen(float time)
+    public IEnumerator toStaticScreen(float time)
     {
         //Log("pissing myself rn (attempting to show static screen)");
         try {
