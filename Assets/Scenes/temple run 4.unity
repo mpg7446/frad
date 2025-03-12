@@ -476,7 +476,7 @@ GameObject:
   - component: {fileID: 462882238}
   - component: {fileID: 462882240}
   - component: {fileID: 462882239}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -905,7 +905,7 @@ GameObject:
   - component: {fileID: 1224345252}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -918,8 +918,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1224345245}
   serializedVersion: 4
-  m_Mass: 60
-  m_Drag: 10
+  m_Mass: 100
+  m_Drag: 5
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -991,8 +991,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 355964019}
   console: {fileID: 2103629396}
-  sensitivity: 1.2
-  speed: 25
+  sensitivity: 1
+  speed: 15
   maxPitch: 70.9
   minPitch: 31.1
   lockCamera: 0
