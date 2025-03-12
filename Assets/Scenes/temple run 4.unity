@@ -782,7 +782,9 @@ MonoBehaviour:
   cam: {fileID: 355964019}
   console: {fileID: 2103629396}
   sensitivity: 1.2
-  speed: 100
+  speed: 25
+  maxPitch: 70.9
+  minPitch: 31.1
   lockCamera: 0
 --- !u!114 &1224345252
 MonoBehaviour:

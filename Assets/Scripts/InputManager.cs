@@ -22,8 +22,8 @@ public class InputManager : CryptidUtils
         inputs.Default.CycleCamera.performed += CycleCameraPerformed;
         inputs.Default.CycleCamera.canceled += CycleCameraCanceled;
 
-        inputs.Default.Robot.performed += RobotPerformed;
-        inputs.Default.Robot.canceled += RobotCanceled;
+        inputs.Default.Console.performed += ConsonlePerformed;
+        inputs.Default.Console.canceled += ConsoleCanceled;
 
         inputs.Enable();
     }
@@ -34,9 +34,11 @@ public class InputManager : CryptidUtils
         movement = new Vector3(mv.x, 0, mv.y);
     }
     private void DirectionalCanceled(InputAction.CallbackContext ctx) { movement = Vector3.zero; }
+
     private void CycleCameraPerformed(InputAction.CallbackContext ctx) { ConsoleManager.Instance.CycleCamera(); }
     private void CycleCameraCanceled(InputAction.CallbackContext ctx) { }
-    private void RobotPerformed(InputAction.CallbackContext ctx) { PlayerManager.Instance.ToggleConsole(); }
-    private void RobotCanceled(InputAction.CallbackContext ctx) { }
+
+    private void ConsonlePerformed(InputAction.CallbackContext ctx) { PlayerManager.Instance.ToggleConsole(); }
+    private void ConsoleCanceled(InputAction.CallbackContext ctx) { }
 
 }

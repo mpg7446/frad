@@ -5,25 +5,33 @@ using UnityEngine;
 public class PlayerManager : CryptidUtils
 {
     // Objects
-    public static PlayerManager Instance;
+    [Header("Objects / Classes")]
     public GameObject cam;
     public GameObject console;
     private Rigidbody rb;
+    public static PlayerManager Instance;
+    [Space(10)]
 
     // settings
+    [Header("Settings")]
     public float sensitivity = 1.2f;
     public int speed = 100;
-
+    [Range(0, 90)]
+    public float maxPitch;
+    [Range(0f, 90)]
+    public float minPitch;
     private Vector3 movement;
 
     // Camera
+    public bool lockCamera = false;
+    private Vector3 lookAngle = new Vector3();
     private float pitch;
     private float yaw;
-    private Vector3 lookAngle = new Vector3();
-    public bool lockCamera = false;
+    [Space(10f)]
 
     // Animation Stance
-    public Stance CurrentStance {  get; private set; }
+    [Header("Animation")]
+    public Stance CurrentStance;
     public enum Stance
     {
         None,
@@ -52,7 +60,7 @@ public class PlayerManager : CryptidUtils
         // Calculate View Transform from Mouse Movement
         pitch -= Input.GetAxis("Mouse Y") * sensitivity;
         yaw += Input.GetAxis("Mouse X") * sensitivity;
-        pitch = Mathf.Clamp(pitch, -90, 90);
+        pitch = Mathf.Clamp(pitch, -maxPitch, minPitch);
         lookAngle = new Vector3(pitch, yaw, 0);
 
         // Apply View Transform
@@ -83,17 +91,17 @@ public class PlayerManager : CryptidUtils
                 break;
         }
     }
-    private void ShowConsole()
+    public void ShowConsole()
     {
-        GameManager.UnlockCursor();
+        //GameManager.UnlockCursor();
         CurrentStance = Stance.Console;
         console.SetActive(true);
         StartCoroutine(ConsoleManager.Instance.toStaticScreen(0.4f));
         lockCamera = true;
     }
-    private void HideConsole()
+    public void HideConsole()
     {
-        GameManager.LockCursor();
+        //GameManager.LockCursor();
         CurrentStance = Stance.None;
         console.SetActive(false);
         lockCamera = false;
