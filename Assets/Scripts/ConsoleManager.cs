@@ -9,7 +9,9 @@ public class ConsoleManager : CryptidUtils
     // Objects
     public static ConsoleManager Instance;
     [SerializeField] private GameObject cam;
+    private Camera camRenderer;
     [SerializeField] private GameObject screen;
+    public GameObject Spotlight;
 
     // Materials
     [SerializeField] private Material screenMat;
@@ -37,7 +39,9 @@ public class ConsoleManager : CryptidUtils
         if (cameras == null)
             LogError("No cameras provided!");
 
-        transformCamera(cameras[selectedCamera].transform);
+        camRenderer = cam.GetComponent<Camera>();
+
+        transformCamera(cameras[selectedCamera].transform, false);
     }
     private void FixedUpdate()
     {
@@ -47,7 +51,7 @@ public class ConsoleManager : CryptidUtils
 
     public void CycleCamera()
     {
-        if (cameraCooldown > 0)
+        if (cameraCooldown > 0 || !PlayerManager.Instance.lockMovement)
             return;
         cameraCooldown = 30;
 
@@ -78,16 +82,18 @@ public class ConsoleManager : CryptidUtils
     //    }
     //}
 
-    private void transformCamera(Transform transform)
+    private void transformCamera(Transform transform, bool light = true)
     {
+        Spotlight.SetActive(false);
         StartCoroutine(toStaticScreen(0.6f));
         //viewingRobot = false;
-        cam.transform.SetParent(transform);
+        cam.transform.SetParent(transform, light);
         cam.transform.position = transform.position;
         cam.transform.rotation = transform.rotation;
+        camRenderer.Render();
     }
 
-    public IEnumerator toStaticScreen(float time)
+    public IEnumerator toStaticScreen(float time, bool light = true)
     {
         //Log("pissing myself rn (attempting to show static screen)");
         try {
@@ -97,6 +103,7 @@ public class ConsoleManager : CryptidUtils
         }
 
         yield return new WaitForSeconds(time);
+        Spotlight.SetActive(light);
         screenMat.SetTexture("_EmissionMap", screenTexture);
     }
 

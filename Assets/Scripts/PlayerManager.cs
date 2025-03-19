@@ -8,6 +8,7 @@ public class PlayerManager : CryptidUtils
     [Header("Objects / Classes")]
     public GameObject cam;
     public GameObject console;
+    public GameObject Flashlight;
     private Rigidbody rb;
     public static PlayerManager Instance;
     [Space(10)]
@@ -15,18 +16,18 @@ public class PlayerManager : CryptidUtils
     // settings
     [Header("Settings")]
     public float sensitivity = 1.2f;
-    public int speed = 100;
-    [Range(0, 90)]
-    public float maxPitch;
-    [Range(0f, 90)]
-    public float minPitch;
+    public float speed = 100;
+    [Range(0, 90)] public float maxPitch;
+    [Range(0, 90)] public float minPitch;
+    [Range(0, 90)] public float maxFreeLook;
     private Vector3 movement;
 
     // Camera
-    public bool lockCamera = false;
-    private Vector3 lookAngle = new Vector3();
+    public bool lockMovement = false;
+    private bool freeLooking = false;
     private float pitch;
     private float yaw;
+    private float freeYaw;
     [Space(10f)]
 
     // Animation Stance
@@ -51,26 +52,31 @@ public class PlayerManager : CryptidUtils
     }
     private void Update()
     {
-        // Escape if fixed in camera view
-        if (lockCamera)
-            return;
-
-        movement = InputManager.Instance.movement;
 
         // Calculate View Transform from Mouse Movement
-        pitch -= Input.GetAxis("Mouse Y") * sensitivity;
-        yaw += Input.GetAxis("Mouse X") * sensitivity;
+        pitch -= Input.GetAxis("Mouse Y") * (lockMovement ? sensitivity / 2 : sensitivity);
         pitch = Mathf.Clamp(pitch, -maxPitch, minPitch);
-        lookAngle = new Vector3(pitch, yaw, 0);
+
+        yaw += Input.GetAxis("Mouse X") * (lockMovement ? sensitivity / 2 : sensitivity);
+        if (freeLooking)
+        {
+            freeYaw += Input.GetAxis("Mouse X") * (lockMovement ? sensitivity / 2 : sensitivity);
+            freeYaw = Mathf.Clamp(freeYaw, -maxFreeLook, maxFreeLook);
+        } 
 
         // Apply View Transform
-        cam.transform.localEulerAngles = new Vector3(lookAngle.x, 0, 0);
-        transform.eulerAngles = new Vector3(0, lookAngle.y, 0);
+        cam.transform.localEulerAngles = new Vector3(pitch, freeYaw, 0);
+        if (!freeLooking)
+            transform.eulerAngles = new Vector3(0, yaw, 0);
+
+        // Update Movement Input from InputManager
+        if (!lockMovement)
+            movement = InputManager.Instance.movement;
     }
     private void FixedUpdate()
     {
         // Escape if fixed in camera view
-        if (lockCamera)
+        if (lockMovement)
             return;
 
         // pane
@@ -97,13 +103,32 @@ public class PlayerManager : CryptidUtils
         CurrentStance = Stance.Console;
         console.SetActive(true);
         StartCoroutine(ConsoleManager.Instance.toStaticScreen(0.4f));
-        lockCamera = true;
+        lockMovement = true;
+        EnableFreeLook();
+        Flashlight.SetActive(false);
     }
     public void HideConsole()
     {
         //GameManager.LockCursor();
         CurrentStance = Stance.None;
         console.SetActive(false);
-        lockCamera = false;
+        lockMovement = false;
+        DisableFreeLook();
+        ConsoleManager.Instance.Spotlight.SetActive(false);
+        Flashlight.SetActive(true);
+    }
+
+    public void EnableFreeLook()
+    {
+        freeLooking = true;
+    }
+    public void DisableFreeLook()
+    {
+        if (!lockMovement)
+        {
+            freeLooking = false;
+            yaw -= freeYaw;
+            freeYaw = 0;
+        }
     }
 }

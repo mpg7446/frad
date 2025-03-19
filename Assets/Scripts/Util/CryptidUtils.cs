@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,15 +6,16 @@ using UnityEngine;
 public class CryptidUtils : MonoBehaviour
 {
     protected const float pi = Mathf.PI; // just in case i need it lmao
-    protected void LogWarning(string warnText) { Debug.LogWarning(this.GetType().ToString() + ": " + warnText); }
-    protected void LogWarning(char warnChar) { Log(warnChar + ""); }
-    protected void LogWarning(int warnInt) { Log(warnInt + ""); }
-    protected void LogError(string errorText) { Debug.LogError(this.GetType().ToString() + ": " + errorText); }
-    protected void LogError(char errorChar) { Log(errorChar + ""); }
-    protected void LogError(int errorInt) { Log(errorInt + ""); }
-    protected void Log(string logText) { Debug.Log(this.GetType().ToString() + ": " + logText);  }
-    protected void Log(char logChar) { Log(logChar + ""); }
-    protected void Log(int logInt) { Log(logInt + "");  }
+    protected void LogWarning(string text) { Debug.LogWarning(this.GetType().ToString() + ": " + text); }
+    protected void LogWarning(char text) { Log(text + ""); }
+    protected void LogWarning(int text) { Log(text + ""); }
+    protected void LogError(string text) { Debug.LogError(this.GetType().ToString() + ": " + text); }
+    protected void LogError(char text) { Log(text + ""); }
+    protected void LogError(int text) { Log(text + ""); }
+    protected void LogError(Exception e) { Log(e + "");  }
+    protected void Log(string text) { Debug.Log(this.GetType().ToString() + ": " + text);  }
+    protected void Log(char text) { Log(text + ""); }
+    protected void Log(int text) { Log(text + "");  }
 
     // I don't think I'll need these uwu
     protected Transform RelativeRotation(GameObject obj, Vector3 rot) 

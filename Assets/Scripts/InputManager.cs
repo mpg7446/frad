@@ -25,6 +25,9 @@ public class InputManager : CryptidUtils
         inputs.Default.Console.performed += ConsonlePerformed;
         inputs.Default.Console.canceled += ConsoleCanceled;
 
+        inputs.Default.FreeLook.performed += FreeLookPerformed;
+        inputs.Default.FreeLook.canceled += FreeLookCanceled;
+
         inputs.Enable();
     }
 
@@ -40,5 +43,8 @@ public class InputManager : CryptidUtils
 
     private void ConsonlePerformed(InputAction.CallbackContext ctx) { PlayerManager.Instance.ToggleConsole(); }
     private void ConsoleCanceled(InputAction.CallbackContext ctx) { }
+
+    private void FreeLookPerformed(InputAction.CallbackContext ctx) { PlayerManager.Instance.EnableFreeLook(); }
+    private void FreeLookCanceled(InputAction.CallbackContext ctx) { PlayerManager.Instance.DisableFreeLook(); }
 
 }

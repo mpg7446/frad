@@ -53,6 +53,15 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FreeLook"",
+                    ""type"": ""Button"",
+                    ""id"": ""e29c8321-f7fa-417b-9c71-0738e72aa77d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -132,6 +141,17 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
                     ""action"": ""Console"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c762bf4a-a679-40c1-b197-7e6cd7f363aa"",
+                    ""path"": ""<Keyboard>/alt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FreeLook"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -143,6 +163,7 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
         m_Default_Directional = m_Default.FindAction("Directional", throwIfNotFound: true);
         m_Default_CycleCamera = m_Default.FindAction("CycleCamera", throwIfNotFound: true);
         m_Default_Console = m_Default.FindAction("Console", throwIfNotFound: true);
+        m_Default_FreeLook = m_Default.FindAction("FreeLook", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -207,6 +228,7 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_Directional;
     private readonly InputAction m_Default_CycleCamera;
     private readonly InputAction m_Default_Console;
+    private readonly InputAction m_Default_FreeLook;
     public struct DefaultActions
     {
         private @MovementInputs m_Wrapper;
@@ -214,6 +236,7 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
         public InputAction @Directional => m_Wrapper.m_Default_Directional;
         public InputAction @CycleCamera => m_Wrapper.m_Default_CycleCamera;
         public InputAction @Console => m_Wrapper.m_Default_Console;
+        public InputAction @FreeLook => m_Wrapper.m_Default_FreeLook;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -232,6 +255,9 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
             @Console.started += instance.OnConsole;
             @Console.performed += instance.OnConsole;
             @Console.canceled += instance.OnConsole;
+            @FreeLook.started += instance.OnFreeLook;
+            @FreeLook.performed += instance.OnFreeLook;
+            @FreeLook.canceled += instance.OnFreeLook;
         }
 
         private void UnregisterCallbacks(IDefaultActions instance)
@@ -245,6 +271,9 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
             @Console.started -= instance.OnConsole;
             @Console.performed -= instance.OnConsole;
             @Console.canceled -= instance.OnConsole;
+            @FreeLook.started -= instance.OnFreeLook;
+            @FreeLook.performed -= instance.OnFreeLook;
+            @FreeLook.canceled -= instance.OnFreeLook;
         }
 
         public void RemoveCallbacks(IDefaultActions instance)
@@ -267,5 +296,6 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
         void OnDirectional(InputAction.CallbackContext context);
         void OnCycleCamera(InputAction.CallbackContext context);
         void OnConsole(InputAction.CallbackContext context);
+        void OnFreeLook(InputAction.CallbackContext context);
     }
 }
