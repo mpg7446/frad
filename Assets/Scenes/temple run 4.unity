@@ -995,6 +995,7 @@ MonoBehaviour:
   - {fileID: 196185309}
   - {fileID: 1900871839}
   - {fileID: 1288286497}
+  fps: 0
 --- !u!1 &348324947
 GameObject:
   m_ObjectHideFlags: 0
@@ -1404,7 +1405,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &455050972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2352,9 +2353,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!136 &1224345247
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2413,7 +2414,7 @@ MonoBehaviour:
   Flashlight: {fileID: 663935915}
   sensitivity: 1
   speed: 15
-  maxPitch: 90
+  maxPitch: 80.4
   minPitch: 31.1
   maxFreeLook: 56
   lockMovement: 0

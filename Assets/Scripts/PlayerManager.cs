@@ -17,14 +17,16 @@ public class PlayerManager : CryptidUtils
     [Header("Settings")]
     public float sensitivity = 1.2f;
     public float speed = 100;
-    [Range(0, 90)] public float maxPitch;
-    [Range(0, 90)] public float minPitch;
-    [Range(0, 90)] public float maxFreeLook;
+    [Range(0, 90)]
+    public float maxPitch = 80;
+    [Range(0, 90)] public float minPitch = 31.1f;
+    //[Range(0, 90)] 
+    public float maxFreeLook = 56;
     private Vector3 movement;
 
     // Camera
     public bool lockMovement = false;
-    private bool freeLooking = false;
+    //private bool freeLooking = false;
     private float pitch;
     private float yaw;
     private float freeYaw;
@@ -52,22 +54,19 @@ public class PlayerManager : CryptidUtils
     }
     private void Update()
     {
-
         // Calculate View Transform from Mouse Movement
         pitch -= Input.GetAxis("Mouse Y") * (lockMovement ? sensitivity / 2 : sensitivity);
         pitch = Mathf.Clamp(pitch, -maxPitch, minPitch);
 
-        yaw += Input.GetAxis("Mouse X") * (lockMovement ? sensitivity / 2 : sensitivity);
-        if (freeLooking)
-        {
-            freeYaw += Input.GetAxis("Mouse X") * (lockMovement ? sensitivity / 2 : sensitivity);
-            freeYaw = Mathf.Clamp(freeYaw, -maxFreeLook, maxFreeLook);
-        } 
+        freeYaw += Input.GetAxis("Mouse X") * (lockMovement ? sensitivity / 2 : sensitivity);
+        freeYaw = Mathf.Clamp(freeYaw, -maxFreeLook, maxFreeLook);
+        yaw = Mathf.Lerp(transform.rotation.y, cam.transform.rotation.y, Time.deltaTime/1.2f);
 
         // Apply View Transform
-        cam.transform.localEulerAngles = new Vector3(pitch, freeYaw, 0);
-        if (!freeLooking)
-            transform.eulerAngles = new Vector3(0, yaw, 0);
+        //Vector3 spin = Vector3.Slerp(transform.eulerAngles, new Vector3(0, yaw, 0), Time.deltaTime);
+        freeYaw -= yaw - transform.rotation.y;
+        transform.rotation = Quaternion.Euler(0, yaw, 0);
+        cam.transform.rotation = Quaternion.Euler(pitch, freeYaw, 0);
 
         // Update Movement Input from InputManager
         if (!lockMovement)
@@ -120,13 +119,13 @@ public class PlayerManager : CryptidUtils
 
     public void EnableFreeLook()
     {
-        freeLooking = true;
+        //freeLooking = true;
     }
     public void DisableFreeLook()
     {
         if (!lockMovement)
         {
-            freeLooking = false;
+            //freeLooking = false;
             yaw -= freeYaw;
             freeYaw = 0;
         }
