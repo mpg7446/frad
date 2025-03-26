@@ -44,7 +44,7 @@ public class InputManager : CryptidUtils
     private void ConsonlePerformed(InputAction.CallbackContext ctx) { PlayerManager.Instance.ToggleConsole(); }
     private void ConsoleCanceled(InputAction.CallbackContext ctx) { }
 
-    private void FreeLookPerformed(InputAction.CallbackContext ctx) { PlayerManager.Instance.EnableFreeLook(); }
-    private void FreeLookCanceled(InputAction.CallbackContext ctx) { PlayerManager.Instance.DisableFreeLook(); }
+    private void FreeLookPerformed(InputAction.CallbackContext ctx) { /*PlayerManager.Instance.EnableFreeLook();*/ }
+    private void FreeLookCanceled(InputAction.CallbackContext ctx) { /*PlayerManager.Instance.DisableFreeLook();*/ }
 
 }

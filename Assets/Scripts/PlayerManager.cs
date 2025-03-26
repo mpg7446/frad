@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +23,7 @@ public class PlayerManager : CryptidUtils
     [Range(0, 90)] public float minPitch = 31.1f;
     //[Range(0, 90)] 
     public float maxFreeLook = 56;
+    private float lockSmoothing = 1;
     private Vector3 movement;
 
     // Camera
@@ -58,15 +60,16 @@ public class PlayerManager : CryptidUtils
         pitch -= Input.GetAxis("Mouse Y") * (lockMovement ? sensitivity / 2 : sensitivity);
         pitch = Mathf.Clamp(pitch, -maxPitch, minPitch);
 
+        lockSmoothing = Mathf.Lerp(lockSmoothing, lockMovement ? 0 : 1, Time.deltaTime / 0.12f);
+
         freeYaw += Input.GetAxis("Mouse X") * (lockMovement ? sensitivity / 2 : sensitivity);
-        freeYaw = Mathf.Clamp(freeYaw, -maxFreeLook, maxFreeLook);
-        yaw = Mathf.Lerp(transform.rotation.y, cam.transform.rotation.y, Time.deltaTime/1.2f);
+        yaw = Mathf.Lerp(yaw, yaw + ((freeYaw - yaw) * lockSmoothing), Time.deltaTime);
+        //yaw = Mathf.MoveTowards(yaw, yaw + ((freeYaw - yaw) * lockSmoothing), 0.2f);
+        freeYaw = Mathf.Clamp(freeYaw, yaw - maxFreeLook, yaw + maxFreeLook);
 
         // Apply View Transform
-        //Vector3 spin = Vector3.Slerp(transform.eulerAngles, new Vector3(0, yaw, 0), Time.deltaTime);
-        freeYaw -= yaw - transform.rotation.y;
         transform.rotation = Quaternion.Euler(0, yaw, 0);
-        cam.transform.rotation = Quaternion.Euler(pitch, freeYaw, 0);
+        cam.transform.localRotation = Quaternion.Euler(pitch, freeYaw - yaw, 0);
 
         // Update Movement Input from InputManager
         if (!lockMovement)
@@ -79,7 +82,7 @@ public class PlayerManager : CryptidUtils
             return;
 
         // pane
-        Vector3 moveForce = transform.forward * movement.z + transform.right * movement.x;
+        Vector3 moveForce = ((cam.transform.forward + transform.forward) / 2) * movement.z + ((cam.transform.right + transform.right) / 2) * movement.x;
         rb.AddForce(moveForce.normalized * speed * 100, ForceMode.Force);
     }
 
@@ -103,7 +106,7 @@ public class PlayerManager : CryptidUtils
         console.SetActive(true);
         StartCoroutine(ConsoleManager.Instance.toStaticScreen(0.4f));
         lockMovement = true;
-        EnableFreeLook();
+        //EnableFreeLook();
         Flashlight.SetActive(false);
     }
     public void HideConsole()
@@ -112,22 +115,8 @@ public class PlayerManager : CryptidUtils
         CurrentStance = Stance.None;
         console.SetActive(false);
         lockMovement = false;
-        DisableFreeLook();
+        //DisableFreeLook();
         ConsoleManager.Instance.Spotlight.SetActive(false);
         Flashlight.SetActive(true);
-    }
-
-    public void EnableFreeLook()
-    {
-        //freeLooking = true;
-    }
-    public void DisableFreeLook()
-    {
-        if (!lockMovement)
-        {
-            //freeLooking = false;
-            yaw -= freeYaw;
-            freeYaw = 0;
-        }
     }
 }
