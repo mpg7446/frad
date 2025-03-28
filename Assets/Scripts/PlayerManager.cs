@@ -42,6 +42,7 @@ public class PlayerManager : CryptidUtils
         None,
         Console
     }
+    public float step { get; private set; }
     private void Start()
     {
         Instance = this;
@@ -55,6 +56,25 @@ public class PlayerManager : CryptidUtils
         GameManager.UnlockCursor();
     }
     private void Update()
+    {
+        ApplyRotation();
+
+        // Update Movement Input from InputManager
+        if (!lockMovement)
+        {
+            movement = InputManager.Instance.movement;
+            step += (Mathf.Abs(movement.x) + Mathf.Abs(movement.z)) / (speed + rb.mass);
+        } else if (movement != Vector3.zero)
+        {
+            movement = Vector3.zero;
+        }
+    }
+    private void FixedUpdate()
+    {
+        ApplyMovement();
+    }
+
+    private void ApplyRotation()
     {
         // Calculate View Transform from Mouse Movement
         pitch -= Input.GetAxis("Mouse Y") * (lockMovement ? sensitivity / 2 : sensitivity);
@@ -70,12 +90,8 @@ public class PlayerManager : CryptidUtils
         // Apply View Transform
         transform.rotation = Quaternion.Euler(0, yaw, 0);
         cam.transform.localRotation = Quaternion.Euler(pitch, freeYaw - yaw, 0);
-
-        // Update Movement Input from InputManager
-        if (!lockMovement)
-            movement = InputManager.Instance.movement;
     }
-    private void FixedUpdate()
+    private void ApplyMovement()
     {
         // Escape if fixed in camera view
         if (lockMovement)
@@ -86,7 +102,7 @@ public class PlayerManager : CryptidUtils
         rb.AddForce(moveForce.normalized * speed * 100, ForceMode.Force);
     }
 
-    // Console
+    #region Console
     public void ToggleConsole()
     {
         switch(CurrentStance)
@@ -119,4 +135,5 @@ public class PlayerManager : CryptidUtils
         ConsoleManager.Instance.Spotlight.SetActive(false);
         Flashlight.SetActive(true);
     }
+    #endregion
 }
