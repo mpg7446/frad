@@ -7114,6 +7114,63 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 2.306, y: 2.3160002, z: 5.4500003}
   m_TimeToStationary: 0.5
+--- !u!1001 &1584985007
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6484498572275287705, guid: f6407c19fbac63d4ca470f139db7e166, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 34.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6484498572275287705, guid: f6407c19fbac63d4ca470f139db7e166, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6484498572275287705, guid: f6407c19fbac63d4ca470f139db7e166, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 28780
+      objectReference: {fileID: 0}
+    - target: {fileID: 6484498572275287705, guid: f6407c19fbac63d4ca470f139db7e166, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6484498572275287705, guid: f6407c19fbac63d4ca470f139db7e166, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6484498572275287705, guid: f6407c19fbac63d4ca470f139db7e166, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6484498572275287705, guid: f6407c19fbac63d4ca470f139db7e166, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6484498572275287705, guid: f6407c19fbac63d4ca470f139db7e166, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6484498572275287705, guid: f6407c19fbac63d4ca470f139db7e166, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6484498572275287705, guid: f6407c19fbac63d4ca470f139db7e166, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8784542766797908113, guid: f6407c19fbac63d4ca470f139db7e166, type: 3}
+      propertyPath: m_Name
+      value: freddy fazball
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f6407c19fbac63d4ca470f139db7e166, type: 3}
 --- !u!1 &1599442992
 GameObject:
   m_ObjectHideFlags: 0
@@ -8669,3 +8726,4 @@ SceneRoots:
   - {fileID: 1277278247}
   - {fileID: 1419426497}
   - {fileID: 447595860}
+  - {fileID: 1584985007}
