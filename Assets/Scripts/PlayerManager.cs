@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PlayerManager : CryptidUtils
 {
@@ -10,7 +11,8 @@ public class PlayerManager : CryptidUtils
     public GameObject cam;
     public GameObject console;
     public GameObject Flashlight;
-    private Rigidbody rb;
+    //private Rigidbody rb;
+    private NavMeshAgent agent;
     public static PlayerManager Instance;
     [Space(10)]
 
@@ -48,7 +50,8 @@ public class PlayerManager : CryptidUtils
         Instance = this;
         if (cam == null)
             cam = transform.Find("Cam").gameObject;
-        rb = this.GetComponent<Rigidbody>();
+        //rb = GetComponent<Rigidbody>();
+        agent = GetComponent<NavMeshAgent>();
         GameManager.LockCursor();
     }
     private void OnDestroy()
@@ -63,7 +66,8 @@ public class PlayerManager : CryptidUtils
         if (!lockMovement)
         {
             movement = InputManager.Instance.movement;
-            step += (Mathf.Abs(movement.x) + Mathf.Abs(movement.z)) / (speed + rb.mass);
+            //step += (Mathf.Abs(movement.x) + Mathf.Abs(movement.z)) / (speed + rb.mass);
+            step += (Mathf.Abs(movement.x) + Mathf.Abs(movement.z)) / agent.speed;
         } else if (movement != Vector3.zero)
         {
             movement = Vector3.zero;
@@ -99,7 +103,9 @@ public class PlayerManager : CryptidUtils
 
         // pane
         Vector3 moveForce = ((cam.transform.forward + transform.forward) / 2) * movement.z + ((cam.transform.right + transform.right) / 2) * movement.x;
-        rb.AddForce(moveForce.normalized * speed * 100, ForceMode.Force);
+        //rb.AddForce(moveForce.normalized * speed * 100, ForceMode.Force);
+        if (moveForce != Vector3.zero)
+            agent.SetDestination(transform.position + moveForce);
     }
 
     #region Console
