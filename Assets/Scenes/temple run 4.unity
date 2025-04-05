@@ -2391,7 +2391,7 @@ MonoBehaviour:
   state: 0
   target: {fileID: 1224345245}
   speed: 2
-  sprintSpeed: 10
+  sprintSpeed: 50
   detectionRadius: 3
   FOV: 90
   viewDistance: 900
