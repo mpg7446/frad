@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class TestingEnemy : Enemy
+public class TestingEnemy : SmartEnemy
 {
     private float radiusDelay;
     public float detectionTime;
+    [SerializeField] private float sprintSpeed;
     protected override void InitBrain()
     {
         brain = ScriptableObject.CreateInstance<Brain>();

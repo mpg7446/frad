@@ -5,15 +5,17 @@ using UnityEngine.AI;
 
 public abstract class Enemy : CryptidUtils
 {
-    protected Brain brain;
-
     [Header("Agent Settings")]
+    [Tooltip("Dictates the AI Movement state")]
     [SerializeField] protected State state = State.None;
     protected NavMeshAgent agent;
+    [Tooltip("The GameObject target that the AI tries to attack")]
     [SerializeField] protected GameObject target;
     protected Collider targetCol;
+    [Tooltip("Base movement speed")]
     [SerializeField] protected float speed;
-    [SerializeField] protected float sprintSpeed;
+    [Tooltip("How short of a distance between the AI and the destination for it to stop tracking")]
+    [SerializeField] protected float destinationDistance = 0.4f;
     private int fixedStep;
     protected bool ReachedDestination { get { return (Vector3.Distance(transform.position, agent.destination) <= destinationDistance) || agent.pathStatus == NavMeshPathStatus.PathPartial || agent.pathStatus == NavMeshPathStatus.PathInvalid; } }
     protected enum State // this will define what the AI is doing
@@ -26,18 +28,21 @@ public abstract class Enemy : CryptidUtils
 
     [Space(10)]
     [Header("Player Detection")]
+    [Tooltip("Distance the AI can detect the target without line of sight")]
     [SerializeField] protected float detectionRadius = 2;
     protected bool InDetectionRadius { get { return Vector3.Distance(transform.position, target.transform.position) <= detectionRadius; } }
+    [Tooltip("Field of view for line of sight detection")]
     [SerializeField] protected float FOV = 180;
+    [Tooltip("Distance the AI can see for line of sight detection")]
     [SerializeField] protected float viewDistance = Mathf.Infinity;
-    [SerializeField] protected float destinationDistance = 0.4f;
+    [Tooltip("LayerMask dictating what layers the line of sight checks")]
     [SerializeField] protected LayerMask raycastMask;
     protected bool InViewRadius { get
         {
             Vector3 heading = targetCol.bounds.center - transform.position;
             if (Vector3.Angle(heading, transform.right) <= FOV / 2)
             {
-                Debug.DrawRay(transform.position, heading);
+                Debug.DrawRay(transform.position, Vector3.ClampMagnitude(heading,viewDistance));
                 if (Physics.Raycast(transform.position, heading, out RaycastHit hit, viewDistance, raycastMask))
                     return hit.collider.CompareTag("Player");
             }
@@ -47,8 +52,6 @@ public abstract class Enemy : CryptidUtils
 
     private void Start()
     {
-        InitBrain();
-
         // Nav Mesh Agent
         agent = GetComponent<NavMeshAgent>();
         if (agent == null)
@@ -100,16 +103,12 @@ public abstract class Enemy : CryptidUtils
         Destroy(gameObject);
     }
 
+    protected virtual void None() { state = State.None; }
     protected virtual void Roam() { state = State.Roam; }
     protected virtual void Search() { state = State.Search; }
     protected virtual void Chase() {  state = State.Chase; }
 
     #region Override Methods
-    // Brain object used for storing previous player - will be parsed through enemy manager or save state manager on destroy
-    // Override this method to set the enemy identifier
-    // brain = new Brain(identifier);
-    protected abstract void InitBrain();
-
     // These methods are called every FixedUpdate
     // which one is called depends on the State state
     protected abstract void OnNone();
@@ -118,8 +117,6 @@ public abstract class Enemy : CryptidUtils
     protected abstract void OnChase();
 
     // Entered methods are called OnTriggerEnter depending on object
-    protected abstract void EnteredFrustum();
-    protected abstract void LeftFrustum();
     protected abstract void Detected();
     protected abstract void Seen();
     #endregion
