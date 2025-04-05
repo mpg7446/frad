@@ -5,7 +5,8 @@ using UnityEngine.AI;
 
 public class TestingEnemy : Enemy
 {
-    private int radiusDelay;
+    private float radiusDelay;
+    public float detectionTime;
     protected override void InitBrain()
     {
         brain = ScriptableObject.CreateInstance<Brain>();
@@ -26,27 +27,32 @@ public class TestingEnemy : Enemy
     }
     protected override void OnSearch()
     {
-        if (agent.pathStatus == NavMeshPathStatus.PathComplete || agent.pathStatus == NavMeshPathStatus.PathInvalid)
+        if (ReachedDestination)
             Roam();
     }
     protected override void OnChase()
     {
         agent.SetDestination(target.transform.position);
 
-        if (agent.pathStatus == NavMeshPathStatus.PathComplete || agent.pathStatus == NavMeshPathStatus.PathInvalid)
+        if (ReachedDestination)
             Roam();
     }
     protected override void Detected()
     {
         if (state != State.Chase)
         {
-            if (radiusDelay < 3){
+            if (radiusDelay < detectionTime*8){
                 radiusDelay++;
                 return;
             }
             radiusDelay--;
             Chase();
         }
+    }
+    protected override void Seen()
+    {
+        if (state != State.Chase)
+            Chase();
     }
 
     protected override void EnteredFrustum()
@@ -64,12 +70,12 @@ public class TestingEnemy : Enemy
     {
         base.Roam();
         agent.speed = speed;
-        agent.stoppingDistance = 1;
+        //agent.stoppingDistance = 1;
     }
     protected override void Chase()
     {
         base.Chase();
         agent.speed = sprintSpeed;
-        agent.stoppingDistance = 0;
+        //agent.stoppingDistance = 0;
     }
 }

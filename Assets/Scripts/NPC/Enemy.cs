@@ -6,23 +6,43 @@ using UnityEngine.AI;
 public abstract class Enemy : CryptidUtils
 {
     protected Brain brain;
-    //[SerializeField] protected Collider viewFrustum;
-    //[SerializeField] protected Collider areaSenseCollider;
-    protected int areaTime;
+
+    [Header("Agent Settings")]
     [SerializeField] protected State state = State.None;
     protected NavMeshAgent agent;
     [SerializeField] protected GameObject target;
+    protected Collider targetCol;
     [SerializeField] protected float speed;
     [SerializeField] protected float sprintSpeed;
     private int fixedStep;
-    [SerializeField] protected float detectionRadius = 2;
-    protected bool InDetectionRadius {  get; private set; }
+    protected bool ReachedDestination { get { return (Vector3.Distance(transform.position, agent.destination) <= destinationDistance) || agent.pathStatus == NavMeshPathStatus.PathPartial || agent.pathStatus == NavMeshPathStatus.PathInvalid; } }
     protected enum State // this will define what the AI is doing
     {
         None,
         Roam,
         Search,
         Chase
+    }
+
+    [Space(10)]
+    [Header("Player Detection")]
+    [SerializeField] protected float detectionRadius = 2;
+    protected bool InDetectionRadius { get { return Vector3.Distance(transform.position, target.transform.position) <= detectionRadius; } }
+    [SerializeField] protected float FOV = 180;
+    [SerializeField] protected float viewDistance = Mathf.Infinity;
+    [SerializeField] protected float destinationDistance = 0.4f;
+    [SerializeField] protected LayerMask raycastMask;
+    protected bool InViewRadius { get
+        {
+            Vector3 heading = targetCol.bounds.center - transform.position;
+            if (Vector3.Angle(heading, transform.right) <= FOV / 2)
+            {
+                Debug.DrawRay(transform.position, heading);
+                if (Physics.Raycast(transform.position, heading, out RaycastHit hit, viewDistance, raycastMask))
+                    return hit.collider.CompareTag("Player");
+            }
+            return false;
+        }
     }
 
     private void Start()
@@ -34,11 +54,10 @@ public abstract class Enemy : CryptidUtils
         if (agent == null)
             MissingComponent("Missing Nav Mesh Agent!");
 
-        // Check if colliders are set correctly
-        //if (viewFrustum == null || areaSenseCollider == null)
-        //    MissingComponent("Missing colliders for detecting player!");
-        //else if (!viewFrustum.isTrigger || !areaSenseCollider.isTrigger)
-        //    MissingComponent("One or more colliders for detecting player is not set to trigger!");
+        // Target Colliders
+        targetCol = target.GetComponent<Collider>();
+        if (targetCol == null)
+            MissingComponent("Target is missing collider!");
     }
 
     private void FixedUpdate()
@@ -65,12 +84,14 @@ public abstract class Enemy : CryptidUtils
             {
                 Detected();
             }
+            if (InViewRadius)
+            {
+                Seen();
+            }
 
-            fixedStep = 25;
+            fixedStep = 8;
         } else
             fixedStep--;
-
-        InDetectionRadius = Vector3.Distance(transform.position, target.transform.position) <= detectionRadius;
     }
 
     private void MissingComponent(string text)
@@ -100,5 +121,6 @@ public abstract class Enemy : CryptidUtils
     protected abstract void EnteredFrustum();
     protected abstract void LeftFrustum();
     protected abstract void Detected();
+    protected abstract void Seen();
     #endregion
 }
