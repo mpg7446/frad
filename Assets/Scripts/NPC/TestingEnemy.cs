@@ -56,17 +56,6 @@ public class TestingEnemy : SmartEnemy
             Chase();
     }
 
-    protected override void EnteredFrustum()
-    {
-        //agent.speed = sprintSpeed;
-        //Chase();
-    }
-    protected override void LeftFrustum()
-    {
-        agent.speed = speed;
-        Roam();
-    }
-
     protected override void Roam()
     {
         base.Roam();

@@ -10,7 +10,7 @@ public abstract class Enemy : CryptidUtils
     [SerializeField] protected State state = State.None;
     protected NavMeshAgent agent;
     [Tooltip("The GameObject target that the AI tries to attack")]
-    [SerializeField] protected GameObject target;
+    public GameObject target;
     protected Collider targetCol;
     [Tooltip("Base movement speed")]
     [SerializeField] protected float speed;
@@ -50,7 +50,7 @@ public abstract class Enemy : CryptidUtils
         }
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         // Nav Mesh Agent
         agent = GetComponent<NavMeshAgent>();
@@ -63,7 +63,7 @@ public abstract class Enemy : CryptidUtils
             MissingComponent("Target is missing collider!");
     }
 
-    private void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         if (fixedStep == 0)
         {

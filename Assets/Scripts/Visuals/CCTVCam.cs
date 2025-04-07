@@ -9,9 +9,9 @@ public class CCTVCam : MonoBehaviour
     public float fps = 20;
     private float elapsed;
     private Camera cam;
-    private bool renderable
+    private bool IsRenderable
     {
-        get => (fps > 0 ? elapsed > 1f / fps : elapsed > 1) && random(3);
+        get => (fps > 0 ? elapsed > 1f / fps : elapsed > 1) && Random(3);
     }
 
     void Start()
@@ -23,7 +23,7 @@ public class CCTVCam : MonoBehaviour
     void Update()
     {
         elapsed += Time.deltaTime;
-        if (renderable)
+        if (IsRenderable)
         {
             elapsed = 0;
             cam.Render();
@@ -32,7 +32,7 @@ public class CCTVCam : MonoBehaviour
             cam.enabled = false;
         }
     }
-    private bool random(int range)
+    private bool Random(int range)
     {
         int rng = UnityEngine.Random.Range(0, range-1);
         elapsed = 0;

@@ -14,8 +14,8 @@ TagManager:
   - PlayerModel
   - ViewportModel
   - Player
-  - 
-  - 
+  - CamProcessing
+  - ViewportProcessing
   - 
   - 
   - 

@@ -62,6 +62,15 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""e24d2133-79b7-42e7-b514-6f1c1f48500b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -123,7 +132,7 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3f561311-dd2d-4c4c-8e76-a0aca2f8d5fd"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -134,7 +143,7 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""9eada850-7bb9-4448-b1d5-885f106c280e"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -152,6 +161,17 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
                     ""action"": ""FreeLook"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0ca52d4f-ece6-4406-9703-bfd9ef16d273"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -164,6 +184,7 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
         m_Default_CycleCamera = m_Default.FindAction("CycleCamera", throwIfNotFound: true);
         m_Default_Console = m_Default.FindAction("Console", throwIfNotFound: true);
         m_Default_FreeLook = m_Default.FindAction("FreeLook", throwIfNotFound: true);
+        m_Default_Sprint = m_Default.FindAction("Sprint", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -229,6 +250,7 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_CycleCamera;
     private readonly InputAction m_Default_Console;
     private readonly InputAction m_Default_FreeLook;
+    private readonly InputAction m_Default_Sprint;
     public struct DefaultActions
     {
         private @MovementInputs m_Wrapper;
@@ -237,6 +259,7 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
         public InputAction @CycleCamera => m_Wrapper.m_Default_CycleCamera;
         public InputAction @Console => m_Wrapper.m_Default_Console;
         public InputAction @FreeLook => m_Wrapper.m_Default_FreeLook;
+        public InputAction @Sprint => m_Wrapper.m_Default_Sprint;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -258,6 +281,9 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
             @FreeLook.started += instance.OnFreeLook;
             @FreeLook.performed += instance.OnFreeLook;
             @FreeLook.canceled += instance.OnFreeLook;
+            @Sprint.started += instance.OnSprint;
+            @Sprint.performed += instance.OnSprint;
+            @Sprint.canceled += instance.OnSprint;
         }
 
         private void UnregisterCallbacks(IDefaultActions instance)
@@ -274,6 +300,9 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
             @FreeLook.started -= instance.OnFreeLook;
             @FreeLook.performed -= instance.OnFreeLook;
             @FreeLook.canceled -= instance.OnFreeLook;
+            @Sprint.started -= instance.OnSprint;
+            @Sprint.performed -= instance.OnSprint;
+            @Sprint.canceled -= instance.OnSprint;
         }
 
         public void RemoveCallbacks(IDefaultActions instance)
@@ -297,5 +326,6 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
         void OnCycleCamera(InputAction.CallbackContext context);
         void OnConsole(InputAction.CallbackContext context);
         void OnFreeLook(InputAction.CallbackContext context);
+        void OnSprint(InputAction.CallbackContext context);
     }
 }

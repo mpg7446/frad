@@ -9,6 +9,7 @@ public class InputManager : CryptidUtils
     public static InputManager Instance;
     private static MovementInputs inputs;
     public Vector3 movement;
+    public bool sprinting;
 
     void Start()
     {
@@ -28,6 +29,9 @@ public class InputManager : CryptidUtils
         inputs.Default.FreeLook.performed += FreeLookPerformed;
         inputs.Default.FreeLook.canceled += FreeLookCanceled;
 
+        inputs.Default.Sprint.performed += SprintPerformed;
+        inputs.Default.Sprint.canceled += SprintCanceled;
+
         inputs.Enable();
     }
 
@@ -44,7 +48,9 @@ public class InputManager : CryptidUtils
     private void ConsonlePerformed(InputAction.CallbackContext ctx) { PlayerManager.Instance.ToggleConsole(); }
     private void ConsoleCanceled(InputAction.CallbackContext ctx) { }
 
-    private void FreeLookPerformed(InputAction.CallbackContext ctx) { /*PlayerManager.Instance.EnableFreeLook();*/ }
+    private void FreeLookPerformed(InputAction.CallbackContext ctx) { Director.Instance.Spawn(Director.ID.Fazball, new Vector3(0, 2, 0)); }
     private void FreeLookCanceled(InputAction.CallbackContext ctx) { /*PlayerManager.Instance.DisableFreeLook();*/ }
 
+    private void SprintPerformed(InputAction.CallbackContext ctx) { sprinting = true; }
+    private void SprintCanceled(InputAction.CallbackContext ctx) { sprinting = false; }
 }

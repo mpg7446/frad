@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering.PostProcessing;
 
 public class PlayerManager : CryptidUtils
 {
@@ -14,29 +15,43 @@ public class PlayerManager : CryptidUtils
     //private Rigidbody rb;
     private NavMeshAgent agent;
     public static PlayerManager Instance;
-    [Space(10)]
 
     // settings
+    [Space(10)]
     [Header("Settings")]
     public float sensitivity = 1.2f;
-    public float speed = 100;
     [Range(0, 90)]
     public float maxPitch = 80;
     [Range(0, 90)] public float minPitch = 31.1f;
     //[Range(0, 90)] 
     public float maxFreeLook = 56;
     private float lockSmoothing = 1;
+
+    // movement
+    [Space(10)]
+    [Header("Movement")]
+    public float speed = 1;
+    public float sprintingSpeed = 2;
+    [Tooltip("Maximum sprint in seconds")]
+    public float maxSprint = 3;
+    private bool sprinting;
+    private float sprint;
     private Vector3 movement;
 
     // Camera
+    [Space(10)]
+    [Header("Camera")]
+    public PostProcessVolume postProcessing;
+    private Vignette vignette;
+    public float maxVignette;
     public bool lockMovement = false;
     //private bool freeLooking = false;
     private float pitch;
     private float yaw;
     private float freeYaw;
-    [Space(10f)]
 
     // Animation Stance
+    [Space(10f)]
     [Header("Animation")]
     public Stance CurrentStance;
     public enum Stance
@@ -44,12 +59,19 @@ public class PlayerManager : CryptidUtils
         None,
         Console
     }
-    public float step { get; private set; }
+    public float Step { get; private set; }
     private void Start()
     {
         Instance = this;
         if (cam == null)
             cam = transform.Find("Cam").gameObject;
+        
+        // Post Processing Vignette
+        if (postProcessing == null)
+            postProcessing = cam.GetComponent<PostProcessVolume>();
+        postProcessing.profile.TryGetSettings(out vignette);
+
+        // Movement
         //rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         GameManager.LockCursor();
@@ -62,15 +84,20 @@ public class PlayerManager : CryptidUtils
     {
         ApplyRotation();
 
+        // Apply sprinting vignette
+        vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, sprinting ? maxVignette : 0, Time.deltaTime / maxSprint);
+
         // Update Movement Input from InputManager
         if (!lockMovement)
         {
             movement = InputManager.Instance.movement;
+            sprinting = InputManager.Instance.sprinting;
             //step += (Mathf.Abs(movement.x) + Mathf.Abs(movement.z)) / (speed + rb.mass);
-            step += (Mathf.Abs(movement.x) + Mathf.Abs(movement.z)) / agent.speed;
+            Step += (Mathf.Abs(movement.x) + Mathf.Abs(movement.z)) / agent.speed;
         } else if (movement != Vector3.zero)
         {
             movement = Vector3.zero;
+            sprinting = false;
         }
     }
     private void FixedUpdate()
@@ -101,8 +128,23 @@ public class PlayerManager : CryptidUtils
         if (lockMovement)
             return;
 
-        // pane
-        Vector3 moveForce = ((cam.transform.forward + transform.forward) / 2) * movement.z + ((cam.transform.right + transform.right) / 2) * movement.x;
+        // movement speed
+        if (sprinting)
+        {
+            if (sprint < maxSprint)
+            {
+                agent.speed = sprintingSpeed;
+                sprint += Time.fixedDeltaTime;
+            } else
+                agent.speed = speed;
+        } else
+        {
+            agent.speed = speed;
+            sprint = Mathf.Clamp(sprint - Time.fixedDeltaTime, 0, maxSprint);
+        }
+
+            // pane
+            Vector3 moveForce = ((cam.transform.forward + transform.forward) / 2) * movement.z + ((cam.transform.right + transform.right) / 2) * movement.x;
         //rb.AddForce(moveForce.normalized * speed * 100, ForceMode.Force);
         if (moveForce != Vector3.zero)
             agent.SetDestination(transform.position + moveForce);

@@ -6,9 +6,10 @@ public abstract class SmartEnemy : Enemy
 {
     protected Brain brain;
 
-    private void Start()
+    protected override void Start()
     {
         InitBrain();
+        base.Start();
     }
 
     #region override functions

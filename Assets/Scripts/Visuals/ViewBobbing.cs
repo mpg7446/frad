@@ -10,9 +10,9 @@ public class ViewBobbing : CryptidUtils
     [SerializeField] private bool invert = false;
     private Vector3 origin;
     private Vector3 next;
-    private float amount { get
+    private float Amount { get
         {
-            float a = (Mathf.Cos((PlayerManager.Instance.step - pi / speed / (delay + 1)) * speed) * intensity) + intensity;
+            float a = (Mathf.Cos((PlayerManager.Instance.Step - pi / speed / (delay + 1)) * speed) * intensity) + intensity;
             return invert ? -a : a;
         } 
     }
@@ -29,6 +29,6 @@ public class ViewBobbing : CryptidUtils
 
     private void FixedUpdate()
     {
-        next = new Vector3(0, amount, 0);
+        next = new Vector3(0, Amount, 0);
     }
 }
