@@ -11,9 +11,12 @@ public class InputManager : CryptidUtils
     public Vector3 movement;
     public bool sprinting;
 
-    void Start()
+    private void Start()
     {
-        Instance = this;
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject, "Instance already exists");
         inputs = new MovementInputs();
 
         // Register Keybinds
@@ -34,6 +37,8 @@ public class InputManager : CryptidUtils
 
         inputs.Enable();
     }
+    private void OnDestroy() => inputs.Disable();
+    private void OnDisable() => inputs.Disable();
 
     private void DirectionalPerformed(InputAction.CallbackContext ctx) 
     { 
@@ -48,7 +53,7 @@ public class InputManager : CryptidUtils
     private void ConsonlePerformed(InputAction.CallbackContext ctx) { PlayerManager.Instance.ToggleConsole(); }
     private void ConsoleCanceled(InputAction.CallbackContext ctx) { }
 
-    private void FreeLookPerformed(InputAction.CallbackContext ctx) { Director.Instance.Spawn(Director.ID.Fazball, new Vector3(0, 2, 0)); }
+    private void FreeLookPerformed(InputAction.CallbackContext ctx) { /*Director.Instance.Spawn(Director.ID.Fazball, new Vector3(0, 2, 0));*/ }
     private void FreeLookCanceled(InputAction.CallbackContext ctx) { /*PlayerManager.Instance.DisableFreeLook();*/ }
 
     private void SprintPerformed(InputAction.CallbackContext ctx) { sprinting = true; }

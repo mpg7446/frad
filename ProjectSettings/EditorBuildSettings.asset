@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/GameManagers.unity
+    guid: 0c1b9b053a3d9454ea4a197fe49bc8d3
+  - enabled: 1
+    path: Assets/Scenes/temple run 4.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}

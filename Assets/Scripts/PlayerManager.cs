@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.PostProcessing;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class PlayerManager : CryptidUtils
 {
     // Objects
@@ -17,18 +18,19 @@ public class PlayerManager : CryptidUtils
     public static PlayerManager Instance;
 
     // settings
-    [Space(10)]
+    [Space]
     [Header("Settings")]
     public float sensitivity = 1.2f;
     [Range(0, 90)]
     public float maxPitch = 80;
-    [Range(0, 90)] public float minPitch = 31.1f;
+    [Range(0, 90)] 
+    public float minPitch = 31.1f;
     //[Range(0, 90)] 
     public float maxFreeLook = 56;
     private float lockSmoothing = 1;
 
     // movement
-    [Space(10)]
+    [Space]
     [Header("Movement")]
     public float speed = 1;
     public float sprintingSpeed = 2;
@@ -39,7 +41,7 @@ public class PlayerManager : CryptidUtils
     private Vector3 movement;
 
     // Camera
-    [Space(10)]
+    [Space]
     [Header("Camera")]
     public PostProcessVolume postProcessing;
     private Vignette vignette;
@@ -51,7 +53,7 @@ public class PlayerManager : CryptidUtils
     private float freeYaw;
 
     // Animation Stance
-    [Space(10f)]
+    [Space]
     [Header("Animation")]
     public Stance CurrentStance;
     public enum Stance

@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : CryptidUtils
 {
     public static GameManager Instance;
 
@@ -13,7 +14,9 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
             Instance = this;
         else
-            Destroy(this);
+            Destroy(gameObject, "Instance already exists");
+        if (!SceneManager.GetSceneByName("temple run 4").IsValid())
+            SceneManager.LoadScene("temple run 4", LoadSceneMode.Additive);
     }
 
     public static void LockCursor()

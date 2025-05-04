@@ -6,44 +6,44 @@ using UnityEngine;
 // THIS FILE IS NOT IN USE, PLEASE DO NOT USE THIS
 public class Console : CryptidUtils
 {
-    private GameObject obj;
-    private PlayerManager controller;
-    private ConsoleManager manager;
-    private bool isActive { get
+    private readonly GameObject Obj;
+    private readonly PlayerManager Controller;
+    private readonly ConsoleManager Manager;
+    private bool IsActive { get
         {
-            return obj.activeSelf;
+            return Obj.activeSelf;
         } 
     }
 
     public Console(GameObject obj, PlayerManager controller)
     {
-        this.obj = obj;
-        this.controller = controller;
-        manager = ConsoleManager.Instance;
+        Obj = obj;
+        Controller = controller;
+        Manager = ConsoleManager.Instance;
     }
 
     public void ToggleConsole()
     {
-        if (isActive)
+        if (IsActive)
             HideConsole();
         else
             ShowConsole();
     }
     private void HideConsole()
     {
-        obj.SetActive(false);
-        controller.CurrentStance = PlayerManager.Stance.None;
-        controller.lockMovement = false;
-        controller.Flashlight.SetActive(true);
-        manager.Spotlight.SetActive(false);
+        Obj.SetActive(false);
+        Controller.CurrentStance = PlayerManager.Stance.None;
+        Controller.lockMovement = false;
+        Controller.Flashlight.SetActive(true);
+        Manager.Spotlight.SetActive(false);
     }
     private void ShowConsole()
     {
-        obj.SetActive(true);
-        controller.CurrentStance = PlayerManager.Stance.Console;
-        controller.lockMovement = true;
-        controller.Flashlight.SetActive(false);
-        manager.Spotlight.SetActive(true);
-        StartCoroutine(manager.toStaticScreen(0.4f));
+        Obj.SetActive(true);
+        Controller.CurrentStance = PlayerManager.Stance.Console;
+        Controller.lockMovement = true;
+        Controller.Flashlight.SetActive(false);
+        Manager.Spotlight.SetActive(true);
+        StartCoroutine(Manager.toStaticScreen(0.4f));
     }
 }

@@ -3,8 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public abstract class Enemy : CryptidUtils
 {
+    public ID EnemyID;
+    public enum ID
+    {
+        Swarm,
+        Husk,
+        Dens,
+        Fazball
+    }
+
     [Header("Agent Settings")]
     [Tooltip("Dictates the AI Movement state")]
     [SerializeField] protected State state = State.None;
@@ -26,7 +36,7 @@ public abstract class Enemy : CryptidUtils
         Chase
     }
 
-    [Space(10)]
+    [Space]
     [Header("Player Detection")]
     [Tooltip("Distance the AI can detect the target without line of sight")]
     [SerializeField] protected float detectionRadius = 2;
@@ -39,7 +49,7 @@ public abstract class Enemy : CryptidUtils
     [SerializeField] protected LayerMask raycastMask;
     protected bool InViewRadius { get
         {
-            Vector3 heading = targetCol.bounds.center - transform.position;
+            Vector3 heading = RelPos(transform.position, targetCol.bounds.center);
             if (Vector3.Angle(heading, transform.right) <= FOV / 2)
             {
                 Debug.DrawRay(transform.position, Vector3.ClampMagnitude(heading,viewDistance));

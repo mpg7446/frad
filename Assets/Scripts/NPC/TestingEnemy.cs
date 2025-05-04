@@ -8,15 +8,9 @@ public class TestingEnemy : SmartEnemy
     private float radiusDelay;
     public float detectionTime;
     [SerializeField] private float sprintSpeed;
-    protected override void InitBrain()
-    {
-        brain = ScriptableObject.CreateInstance<Brain>();
-    }
+    protected override void InitBrain() => brain = ScriptableObject.CreateInstance<Brain>();
 
-    protected override void OnNone()
-    {
-        Roam();
-    }
+    protected override void OnNone() => Roam();
     protected override void OnRoam()
     {
         Vector3 loc = target.transform.position;
@@ -28,15 +22,13 @@ public class TestingEnemy : SmartEnemy
     }
     protected override void OnSearch()
     {
-        if (ReachedDestination)
-            Roam();
+        if (ReachedDestination) Roam();
     }
     protected override void OnChase()
     {
         agent.SetDestination(target.transform.position);
 
-        if (ReachedDestination)
-            Roam();
+        if (ReachedDestination) Roam();
     }
     protected override void Detected()
     {
@@ -52,8 +44,7 @@ public class TestingEnemy : SmartEnemy
     }
     protected override void Seen()
     {
-        if (state != State.Chase)
-            Chase();
+        if (state != State.Chase) Chase();
     }
 
     protected override void Roam()
