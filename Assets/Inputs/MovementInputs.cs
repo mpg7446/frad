@@ -55,7 +55,7 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""FreeLook"",
+                    ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""e29c8321-f7fa-417b-9c71-0738e72aa77d"",
                     ""expectedControlType"": ""Button"",
@@ -154,11 +154,11 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""c762bf4a-a679-40c1-b197-7e6cd7f363aa"",
-                    ""path"": ""<Keyboard>/alt"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""FreeLook"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -183,7 +183,7 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
         m_Default_Directional = m_Default.FindAction("Directional", throwIfNotFound: true);
         m_Default_CycleCamera = m_Default.FindAction("CycleCamera", throwIfNotFound: true);
         m_Default_Console = m_Default.FindAction("Console", throwIfNotFound: true);
-        m_Default_FreeLook = m_Default.FindAction("FreeLook", throwIfNotFound: true);
+        m_Default_Interact = m_Default.FindAction("Interact", throwIfNotFound: true);
         m_Default_Sprint = m_Default.FindAction("Sprint", throwIfNotFound: true);
     }
 
@@ -249,7 +249,7 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_Directional;
     private readonly InputAction m_Default_CycleCamera;
     private readonly InputAction m_Default_Console;
-    private readonly InputAction m_Default_FreeLook;
+    private readonly InputAction m_Default_Interact;
     private readonly InputAction m_Default_Sprint;
     public struct DefaultActions
     {
@@ -258,7 +258,7 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
         public InputAction @Directional => m_Wrapper.m_Default_Directional;
         public InputAction @CycleCamera => m_Wrapper.m_Default_CycleCamera;
         public InputAction @Console => m_Wrapper.m_Default_Console;
-        public InputAction @FreeLook => m_Wrapper.m_Default_FreeLook;
+        public InputAction @Interact => m_Wrapper.m_Default_Interact;
         public InputAction @Sprint => m_Wrapper.m_Default_Sprint;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
@@ -278,9 +278,9 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
             @Console.started += instance.OnConsole;
             @Console.performed += instance.OnConsole;
             @Console.canceled += instance.OnConsole;
-            @FreeLook.started += instance.OnFreeLook;
-            @FreeLook.performed += instance.OnFreeLook;
-            @FreeLook.canceled += instance.OnFreeLook;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
             @Sprint.started += instance.OnSprint;
             @Sprint.performed += instance.OnSprint;
             @Sprint.canceled += instance.OnSprint;
@@ -297,9 +297,9 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
             @Console.started -= instance.OnConsole;
             @Console.performed -= instance.OnConsole;
             @Console.canceled -= instance.OnConsole;
-            @FreeLook.started -= instance.OnFreeLook;
-            @FreeLook.performed -= instance.OnFreeLook;
-            @FreeLook.canceled -= instance.OnFreeLook;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
             @Sprint.started -= instance.OnSprint;
             @Sprint.performed -= instance.OnSprint;
             @Sprint.canceled -= instance.OnSprint;
@@ -325,7 +325,7 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
         void OnDirectional(InputAction.CallbackContext context);
         void OnCycleCamera(InputAction.CallbackContext context);
         void OnConsole(InputAction.CallbackContext context);
-        void OnFreeLook(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
     }
 }

@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public abstract class Enemy : CryptidUtils
-{
+public abstract class Enemy : CryptidUtils {
     public ID EnemyID;
     public enum ID
     {
@@ -47,11 +46,9 @@ public abstract class Enemy : CryptidUtils
     [SerializeField] protected float viewDistance = Mathf.Infinity;
     [Tooltip("LayerMask dictating what layers the line of sight checks")]
     [SerializeField] protected LayerMask raycastMask;
-    protected bool InViewRadius { get
-        {
+    protected bool InViewRadius { get {
             Vector3 heading = RelPos(transform.position, targetCol.bounds.center);
-            if (Vector3.Angle(heading, transform.right) <= FOV / 2)
-            {
+            if (Vector3.Angle(heading, transform.right) <= FOV / 2) {
                 Debug.DrawRay(transform.position, Vector3.ClampMagnitude(heading,viewDistance));
                 if (Physics.Raycast(transform.position, heading, out RaycastHit hit, viewDistance, raycastMask))
                     return hit.collider.CompareTag("Player");
@@ -60,8 +57,7 @@ public abstract class Enemy : CryptidUtils
         }
     }
 
-    protected virtual void Start()
-    {
+    protected virtual void Start() {
         // Nav Mesh Agent
         agent = GetComponent<NavMeshAgent>();
         if (agent == null)
@@ -73,12 +69,9 @@ public abstract class Enemy : CryptidUtils
             MissingComponent("Target is missing collider!");
     }
 
-    protected virtual void FixedUpdate()
-    {
-        if (fixedStep == 0)
-        {
-            switch (state)
-            {
+    protected virtual void FixedUpdate() {
+        if (fixedStep == 0) {
+            switch (state) {
                 case State.None:
                     OnNone();
                     break;
@@ -93,12 +86,10 @@ public abstract class Enemy : CryptidUtils
                     break;
             }
 
-            if (InDetectionRadius)
-            {
+            if (InDetectionRadius) {
                 Detected();
             }
-            if (InViewRadius)
-            {
+            if (InViewRadius) {
                 Seen();
             }
 
@@ -107,9 +98,8 @@ public abstract class Enemy : CryptidUtils
             fixedStep--;
     }
 
-    private void MissingComponent(string text)
-    {
-        LogError(text);
+    private void MissingComponent(string text) {
+        LogErr(text);
         Destroy(gameObject);
     }
 

@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/temple run 4.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/Circle Room Test Layout.unity
+    guid: 0c2f6b51e7659e44db6d799db1f0d9dc
   m_configObjects: {}

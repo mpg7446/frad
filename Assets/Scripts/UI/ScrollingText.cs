@@ -25,7 +25,7 @@ public class ScrollingText : CryptidUtils
                 tmp = GetComponent<TextMeshPro>();
             } catch
             {
-                LogError("Failed to find TextMeshPro on object " + gameObject.name);
+                LogErr("Failed to find TextMeshPro on object " + gameObject.name);
                 return;
             }
         }
@@ -48,7 +48,7 @@ public class ScrollingText : CryptidUtils
                 if (next != '\0')
                     tmp.text += next;
             } catch (Exception e) {
-                LogError("failed to print getNextChar() to TextMeshPro Component: " + e.Message);
+                LogErr("failed to print getNextChar() to TextMeshPro Component: " + e.Message);
             }
         }
 

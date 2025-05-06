@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "FreeLook",
+                    "name": "Interact",
                     "type": "Button",
                     "id": "e29c8321-f7fa-417b-9c71-0738e72aa77d",
                     "expectedControlType": "Button",
@@ -132,11 +132,11 @@
                 {
                     "name": "",
                     "id": "c762bf4a-a679-40c1-b197-7e6cd7f363aa",
-                    "path": "<Keyboard>/alt",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "FreeLook",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

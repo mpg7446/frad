@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 
-public class Director : CryptidUtils
-{
+public class Director : CryptidUtils {
     public static Director Instance;
     public List<Enemy> Active { get; private set; }
 
@@ -16,17 +15,14 @@ public class Director : CryptidUtils
     // easter egg / joke NPCs
     [SerializeField] private GameObject fazball;
 
-    private void Start()
-    {
+    private void Start() {
         if (Instance == null)
             Instance = this;
         else
             Destroy(gameObject, "Instance already exists");
     }
-    private GameObject GetNPC(Enemy.ID id)
-    {
-        switch (id)
-        {
+    private GameObject GetNPC(Enemy.ID id) {
+        switch (id) {
             case Enemy.ID.Swarm:
                 return swarm;
             case Enemy.ID.Husk:
@@ -35,22 +31,31 @@ public class Director : CryptidUtils
                 return dens;
             case Enemy.ID.Fazball:
                 return fazball;
+            default:
+                break;
         }
         return null;
     }
 
-    public void Spawn(Enemy.ID id, Vector3 location)
-    {
+    public void Spawn(Enemy.ID id, Vector3 location) {
         GameObject instance = Instantiate(GetNPC(id));
         Active.Add(instance.GetComponent<Enemy>());
         instance.transform.position = location;
-        try
-        {
+        try {
             instance.GetComponent<Enemy>().target = PlayerManager.Instance.gameObject;
         }
-        catch
-        {
+        catch {
             instance.GetComponent<FollowingNPC>().target = PlayerManager.Instance.gameObject;
         }
+    }
+
+    public void RegisterPingEvent() { /*
+        foreach (Enemy enemy in Active) {
+            if (enemy is SmartEnemy) {
+                Log("lets just pretend that something happens here");
+                // this is where i watched my parents die parapa
+                // check where player is compared to enemy and sight and shit checks and whatnot
+            }
+        }*/
     }
 }

@@ -4,36 +4,35 @@ using System.Collections.Generic;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
-public class CCTVCam : MonoBehaviour
-{
+[RequireComponent(typeof(Camera))]
+public class CCTVCam : CryptidUtils {
     public float fps = 20;
     private float elapsed;
     private Camera cam;
-    private bool IsRenderable
-    {
+    private bool IsRenderable {
         get => (fps > 0 ? elapsed > 1f / fps : elapsed > 1) && Random(3);
     }
 
-    void Start()
-    {
+    void Start() {
         cam = GetComponent<Camera>();
         cam.enabled = false;
+
+        if (ConsoleManager.Instance == null)
+            LogErr("Failed to register camera renderer, no ConsoleManager in scene!");
+        else
+            ConsoleManager.Instance.RegisterCameraRenderer(gameObject);
     }
 
-    void Update()
-    {
+    void Update() {
         elapsed += Time.deltaTime;
-        if (IsRenderable)
-        {
+        if (IsRenderable) {
             elapsed = 0;
             cam.Render();
-        } else
-        {
+        } else {
             cam.enabled = false;
         }
     }
-    private bool Random(int range)
-    {
+    private bool Random(int range) {
         int rng = UnityEngine.Random.Range(0, range-1);
         elapsed = 0;
         return rng == 0;

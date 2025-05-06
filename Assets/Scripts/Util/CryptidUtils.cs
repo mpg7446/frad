@@ -10,14 +10,14 @@ public class CryptidUtils : MonoBehaviour
     protected Vector3 RelPos(Vector3 origin, Vector3 target) => target - origin;
 
     #region DebugLogs
-    protected void LogWarning(string text) => Debug.LogWarning(GetType().ToString() + ": " + text);
-    protected void LogWarning(char text) => Log(text + "");
-    protected void LogWarning(int text) => Log(text + "");
-    protected void LogWarning(Exception e) => Log(e + "");
-    protected void LogError(string text) => Debug.LogError(GetType().ToString() + ": " + text);
-    protected void LogError(char text) => Log(text + "");
-    protected void LogError(int text) => Log(text + "");
-    protected void LogError(Exception e) => Log(e + "");
+    protected void LogWarn(string text) => Debug.LogWarning(GetType().ToString() + ": " + text);
+    protected void LogWarn(char text) => Log(text + "");
+    protected void LogWarn(int text) => Log(text + "");
+    protected void LogWarn(Exception e) => Log(e + "");
+    protected void LogErr(string text) => Debug.LogError(GetType().ToString() + ": " + text);
+    protected void LogErr(char text) => Log(text + "");
+    protected void LogErr(int text) => Log(text + "");
+    protected void LogErr(Exception e) => Log(e + "");
     protected void Log(string text) => Debug.Log(GetType().ToString() + ": " + text); 
     protected void Log(char text) => Log(text + "");
     protected void Log(int text) => Log(text + "");
@@ -27,7 +27,7 @@ public class CryptidUtils : MonoBehaviour
     protected void Destroy(UnityEngine.Object obj, string text) => Destroy(obj, 0, text);
     protected void Destroy(UnityEngine.Object obj, int t, string text)
     {
-        LogWarning("(" + GetType().ToString() + ") " + obj.name + " was destroyed with reason: \"" + text + "\"");
+        LogWarn("(" + GetType().ToString() + ") " + obj.name + " was destroyed with reason: \"" + text + "\"");
         Destroy(obj, t);
     }
     #endregion

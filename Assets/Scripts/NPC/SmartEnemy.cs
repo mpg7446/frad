@@ -2,12 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class SmartEnemy : Enemy
-{
+public abstract class SmartEnemy : Enemy {
     protected Brain brain;
 
-    protected override void Start()
-    {
+    protected override void Start() {
         InitBrain();
         base.Start();
     }

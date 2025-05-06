@@ -12,19 +12,27 @@ public abstract class Event : CryptidUtils {
         Played
     }
 
-    private void Start() {
+    private void Awake() {
         Collider col = GetComponent<Collider>();
-        if (!col.isTrigger) {
-            LogWarning("Collider on " + name + " is not set as trigger, setting to trigger");
-            col.isTrigger = true;
-        }
+        col.isTrigger = true;
+        col.includeLayers = collisionMask;
+    }
+    private void Start() {
+        EventManager.Instance.RegisterEvent(this);
+        OnStart();
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (other.gameObject.layer == collisionMask) {
-            OnEventTrigger();
-            Log("Event Triggered");
-        }
+        if (other.gameObject.layer == collisionMask)
+            OnEvent();
     }
-    public abstract void OnEventTrigger();
+
+    private void OnTriggerExit(Collider other) {
+        if (other.gameObject.layer == collisionMask)
+            OnExitEvent();
+    }
+
+    protected abstract void OnStart();
+    protected abstract void OnEvent();
+    protected abstract void OnExitEvent();
 }

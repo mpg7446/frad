@@ -4,8 +4,7 @@ using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class ConsoleManager : CryptidUtils
-{
+public class ConsoleManager : CryptidUtils {
     // Objects
     public static ConsoleManager Instance;
     [SerializeField] private GameObject cam;
@@ -19,47 +18,47 @@ public class ConsoleManager : CryptidUtils
     [SerializeField] private Texture switchingTexture;
 
     // Cameras
-    [SerializeField] private GameObject[] cameras;
+    [SerializeField] private List<GameObject> cameras;
     [SerializeField] private int selectedCamera = 0;
     private int cameraCooldown;
 
-    private void Start()
-    {
+    private void Start() {
         // Setup
         Instance = this;
         screenMat = screen.GetComponent<Renderer>().material;
         try {
             screenTexture = screenMat.GetTexture("_EmissionMap");
         } catch {
-            LogWarning("Could not find current screen render texture, is it missing?");
+            LogWarn("Could not find current screen render texture, is it missing?");
         }
 
         if (cam == null)
             cam = gameObject;
         if (cameras == null)
-            LogError("No cameras provided!");
-
-        camRenderer = cam.GetComponent<Camera>();
-
-        transformCamera(cameras[selectedCamera].transform, false);
+            LogErr("No cameras provided!");
     }
-    private void FixedUpdate()
-    {
+    private void FixedUpdate() {
         if (cameraCooldown > 0)
             cameraCooldown--;
     }
 
-    public void CycleCamera()
-    {
+    public void RegisterCameraRenderer(GameObject renderer) {
+        cam = renderer;
+        camRenderer = cam.GetComponent<Camera>();
+        TransformCamera(cameras[selectedCamera].transform, false);
+    }
+    public void RegisterCamera(GameObject camera) => cameras.Add(camera);
+
+    public void CycleCamera() {
         if (cameraCooldown > 0 || !PlayerManager.Instance.lockMovement)
             return;
         cameraCooldown = 30;
 
         selectedCamera++;
-        if (selectedCamera >= cameras.Length)
+        if (selectedCamera >= cameras.Count)
             selectedCamera = 0;
 
-        transformCamera(cameras[selectedCamera].transform);
+        TransformCamera(cameras[selectedCamera].transform);
     }
 
     // System no longer in use
@@ -82,29 +81,25 @@ public class ConsoleManager : CryptidUtils
     //    }
     //}
 
-    private void transformCamera(Transform transform, bool light = true)
-    {
+    private void TransformCamera(Transform transform, bool light = true) {
         Spotlight.SetActive(false);
-        StartCoroutine(toStaticScreen(0.6f));
+        StartCoroutine(ToStaticScreen(0.6f));
         //viewingRobot = false;
         cam.transform.SetParent(transform, light);
-        cam.transform.position = transform.position;
-        cam.transform.rotation = transform.rotation;
+        cam.transform.SetPositionAndRotation(transform.position, transform.rotation);
         camRenderer.Render();
     }
 
-    public IEnumerator toStaticScreen(float time, bool light = true)
-    {
+    public IEnumerator ToStaticScreen(float time, bool light = true) {
         //Log("pissing myself rn (attempting to show static screen)");
         try {
             screenMat.SetTexture("_EmissionMap",switchingTexture);
         } catch {
-            LogWarning("Failed to access switchingTexture, is it missing?");
+            LogWarn("Failed to access switchingTexture, is it missing?");
         }
 
         yield return new WaitForSeconds(time);
         Spotlight.SetActive(light);
         screenMat.SetTexture("_EmissionMap", screenTexture);
     }
-
 }
