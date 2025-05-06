@@ -10,7 +10,8 @@ public class Director : CryptidUtils {
     [Header("NPC Objects")]
     [SerializeField] private GameObject swarm;
     [SerializeField] private GameObject husk;
-    [SerializeField] private GameObject dens;
+    [SerializeField] private GameObject dens; // probably not gonna use this
+    // OR this could be used as a punishment for not following objectives
 
     // easter egg / joke NPCs
     [SerializeField] private GameObject fazball;

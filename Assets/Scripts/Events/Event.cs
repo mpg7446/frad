@@ -23,12 +23,12 @@ public abstract class Event : CryptidUtils {
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (other.gameObject.layer == collisionMask)
+        if (other.gameObject.tag == "Player")
             OnEvent();
     }
 
     private void OnTriggerExit(Collider other) {
-        if (other.gameObject.layer == collisionMask)
+        if (other.gameObject.tag == "Player")
             OnExitEvent();
     }
 

@@ -13,8 +13,9 @@ public class SaveState : ScriptableObject {
         this.activeEnemies = activeEnemies;
         this.enemyLoc = enemyLoc;
 
-        for (int i = 0; i < triggeredEvents.Count; i++)
-            eventHistory[i] = triggeredEvents[i].state == Event.PlayState.Played;
+        if (triggeredEvents != null && triggeredEvents.Count != 0) 
+            for (int i = 0; i < triggeredEvents.Count; i++)
+                eventHistory[i] = triggeredEvents[i].state == Event.PlayState.Played;
     }
 
     public List<Event> NewEvents(Event[] events) {

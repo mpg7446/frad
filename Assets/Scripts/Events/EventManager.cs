@@ -18,14 +18,18 @@ public class EventManager : CryptidUtils {
     public void RegisterEvent(Event e) => events.Add(e);
 
     public void Save() {
-        List<Enemy.ID> active = null;
-        List<Vector3> enemyLoc = null;
-        foreach (Enemy e in Director.Instance.Active) {
-            active.Add(e.EnemyID);
-            enemyLoc.Add(e.gameObject.transform.position);
+        List<Enemy.ID> active = new();
+        List<Vector3> enemyLoc = new();
+        try {
+            foreach (Enemy e in Director.Instance.Active) {
+                active.Add(e.EnemyID);
+                enemyLoc.Add(e.gameObject.transform.position);
+            }
+        } catch {
+            LogWarn("No active enemies found in scene");
         }
 
-        lastState = new(PlayerManager.Instance.transform.position, active.ToArray(), enemyLoc.ToArray(), events);
+        lastState = new(PlayerManager.Instance.transform.position, active.ToArray(), enemyLoc.ToArray(), new List<Event>()); // replace 'new List<Event>()' with a list of triggered events
         lastState.ass();
     }
 
