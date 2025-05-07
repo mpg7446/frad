@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class SmartEnemy : Enemy {
-    protected Brain brain;
+    protected Brain brain; // please dont use this lmao
+
+    protected bool watchesLockers;
+    protected int lockerValue;
 
     protected override void Start() {
         InitBrain();
