@@ -6,14 +6,14 @@ using UnityEngine;
 public class Scene : ScriptableObject
 {
     public string sceneName;
-    public sceneType type;
+    public SceneType type;
     public string exclusiveTag;
     public bool isExclusive { get {
-            return type == sceneType.Exclusive;
+            return type == SceneType.Exclusive;
         } 
     }
 
-    public enum sceneType {
+    public enum SceneType {
         Normal,
         Exclusive,
         Persistent

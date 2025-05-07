@@ -25,12 +25,12 @@ public class AnimationEvent : Event {
         if (state == PlayState.Playing && type != PlayType.Contained && !anim.isPlaying)
             Stop();
     }
-    protected override void OnEvent() {
+    protected override void OnEnter() {
         if (state == PlayState.Ready && type != PlayType.OnExit)
             Play();
     }
 
-    protected override void OnExitEvent() {
+    protected override void OnExit() {
         if (state == PlayState.Ready && type == PlayType.OnExit)
             Play();
         else if (state == PlayState.Ready && type == PlayType.Contained)

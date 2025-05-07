@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Checkpoint : Event {
     protected override void OnStart() { }
-    protected override void OnEvent() => Save();
-    protected override void OnExitEvent() { }
+    protected override void OnEnter() => Save();
+    protected override void OnExit() { }
 
     private void Save() {
         Log("reached checkpoint " + name);

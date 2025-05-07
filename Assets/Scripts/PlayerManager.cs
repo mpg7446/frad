@@ -12,7 +12,7 @@ public class PlayerManager : CryptidUtils {
     public GameObject cam;
     public GameObject console;
     public GameObject Flashlight;
-    private NavMeshAgent agent;
+    public NavMeshAgent agent;
     public static PlayerManager Instance;
 
     // settings
@@ -177,7 +177,7 @@ public class PlayerManager : CryptidUtils {
     public void Interact() {
         if (!inLocker && lookingAt is Locker) {
             Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-            Director.Instance.RegisterPingEvent();
+            Director.Instance.RegisterPing();
         }
     }
     #endregion

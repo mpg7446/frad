@@ -353,8 +353,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   maps:
-  - {fileID: 11400000, guid: 919bcd08432a0f2498735b534a84188c, type: 2}
   - {fileID: 11400000, guid: d5b920ca245bdbd4bb0c9e4ae9503f6d, type: 2}
+  - {fileID: 11400000, guid: 919bcd08432a0f2498735b534a84188c, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

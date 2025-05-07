@@ -17,7 +17,7 @@ public abstract class Enemy : CryptidUtils {
     [Header("Agent Settings")]
     [Tooltip("Dictates the AI Movement state")]
     [SerializeField] protected State state = State.None;
-    protected NavMeshAgent agent;
+    public NavMeshAgent agent;
     [Tooltip("The GameObject target that the AI tries to attack")]
     public GameObject target;
     protected Collider targetCol;

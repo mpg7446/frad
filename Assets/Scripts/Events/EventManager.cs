@@ -17,23 +17,57 @@ public class EventManager : CryptidUtils {
 
     public void RegisterEvent(Event e) => events.Add(e);
 
+    [ContextMenu("Force Save")]
     public void Save() {
+        // get enemy data
         List<Enemy.ID> active = new();
-        List<Vector3> enemyLoc = new();
+        List<Vector3> enemyLocations = new();
+        List<Vector3> enemyDestinations = new();
         try {
             foreach (Enemy e in Director.Instance.Active) {
                 active.Add(e.EnemyID);
-                enemyLoc.Add(e.gameObject.transform.position);
+                enemyLocations.Add(e.gameObject.transform.position);
+                enemyDestinations.Add(e.agent.destination);
             }
         } catch {
             LogWarn("No active enemies found in scene");
         }
 
-        lastState = new(PlayerManager.Instance.transform.position, active.ToArray(), enemyLoc.ToArray(), new List<Event>()); // replace 'new List<Event>()' with a list of triggered events
-        lastState.ass();
+        // get event data
+        List<Event> triggered = new();
+
+        for (int i = 0; i < events.Count; i++) {
+            if (events[i].state == Event.PlayState.Ready)
+                continue;
+            triggered.Add(events[i]);
+            Log("Saved triggered event: " + events[i].name);
+        }
+
+        lastState = new(PlayerManager.Instance.transform, active, enemyLocations, enemyDestinations, triggered); // replace 'new List<Event>()' with a list of triggered events
     }
 
+    [ContextMenu("Rollback Last Save")]
     public void Rollback() {
         // this is the part where he kills u <3
+        if (lastState == null) {
+            LogWarn("Failed to rollback save, no save state found");
+            return;
+        }
+
+        Log("lets pretend theres a function here");
+        // reset player position
+        PlayerManager.Instance.gameObject.transform.SetPositionAndRotation(lastState.playerPosition, lastState.playerRotation);
+        PlayerManager.Instance.agent.ResetPath();
+
+        // set enemy positions
+        if (lastState.activeEnemies != null && lastState.activeEnemies.Count > 0) {
+            for (int i = 0; i < lastState.activeEnemies.Count; i++) {
+                Enemy enemy = Director.Instance.Active[i];
+                enemy.transform.position = lastState.enemyLocations[i];
+                enemy.agent.SetDestination(lastState.enemyDestinations[i]);
+            }
+        }
+
+        // rollback triggered events
     }
 }

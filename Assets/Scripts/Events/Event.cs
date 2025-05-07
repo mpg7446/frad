@@ -24,15 +24,15 @@ public abstract class Event : CryptidUtils {
 
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.tag == "Player")
-            OnEvent();
+            OnEnter();
     }
 
     private void OnTriggerExit(Collider other) {
         if (other.gameObject.tag == "Player")
-            OnExitEvent();
+            OnExit();
     }
 
     protected abstract void OnStart();
-    protected abstract void OnEvent();
-    protected abstract void OnExitEvent();
+    protected abstract void OnEnter();
+    protected abstract void OnExit();
 }

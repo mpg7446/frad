@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SaveState : ScriptableObject {
-    public readonly Vector3 playerLoc;
-    public readonly Enemy.ID[] activeEnemies;
-    public readonly Vector3[] enemyLoc;
+    public readonly Vector3 playerPosition;
+    public readonly Quaternion playerRotation;
+    public readonly List<Enemy.ID> activeEnemies;
+    public readonly List<Vector3> enemyLocations;
+    public readonly List<Vector3> enemyDestinations;
     private readonly bool[] eventHistory;
 
-    public SaveState(Vector3 playerLoc, Enemy.ID[] activeEnemies, Vector3[] enemyLoc, List<Event> triggeredEvents) {
-        this.playerLoc = playerLoc;
+    public SaveState(Transform playerLocation, List<Enemy.ID> activeEnemies, List<Vector3> enemyLocations, List<Vector3> enemyDestinations, List<Event> triggeredEvents) {
+        playerPosition = playerLocation.position;
+        playerRotation = playerLocation.rotation;
         this.activeEnemies = activeEnemies;
-        this.enemyLoc = enemyLoc;
+        this.enemyLocations = enemyLocations;
+        this.enemyDestinations = enemyDestinations;
 
         if (triggeredEvents != null && triggeredEvents.Count != 0) 
             for (int i = 0; i < triggeredEvents.Count; i++)
@@ -29,9 +33,5 @@ public class SaveState : ScriptableObject {
         }
 
         return newEvents;
-    }
-
-    public void ass() {
-        Debug.Log("this code is ass, i cant figure out how im gonna return the save state qwq");
     }
 }

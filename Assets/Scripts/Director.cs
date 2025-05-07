@@ -22,6 +22,7 @@ public class Director : CryptidUtils {
         else
             Destroy(gameObject, "Instance already exists");
     }
+
     private GameObject GetNPC(Enemy.ID id) {
         switch (id) {
             case Enemy.ID.Swarm:
@@ -50,7 +51,7 @@ public class Director : CryptidUtils {
         }
     }
 
-    public void RegisterPingEvent() { /*
+    public void RegisterPing() { /*
         foreach (Enemy enemy in Active) {
             if (enemy is SmartEnemy) {
                 Log("lets just pretend that something happens here");
