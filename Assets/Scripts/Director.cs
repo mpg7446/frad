@@ -51,7 +51,7 @@ public class Director : CryptidUtils {
         }
     }
 
-    public void RegisterPing() { /*
+    public void RegisterPing(float size) { /*
         foreach (Enemy enemy in Active) {
             if (enemy is SmartEnemy) {
                 Log("lets just pretend that something happens here");

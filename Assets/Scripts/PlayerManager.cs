@@ -175,10 +175,18 @@ public class PlayerManager : CryptidUtils {
 
     #region Interactions
     public void Interact() {
-        if (!inLocker && lookingAt is Locker) {
-            Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-            Director.Instance.RegisterPing();
-        }
+        if (lookingAt == null)
+            return;
+
+        if (!lookingAt.Interact(gameObject))
+            return;
+
+        //if (!inLocker && lookingAt is Locker) {
+        //    Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        //    Director.Instance.RegisterPing();
+        //    return;
+        //}
+
     }
     #endregion
 }
