@@ -33,9 +33,9 @@ public class SaveState : ScriptableObject {
         List<Event> newEvents = null;
         int index = 0;
 
-        foreach (Event e in events) {
-            if ((e.state == Event.PlayState.Played && eventHistory[index]) || (e.state != Event.PlayState.Ready && !eventHistory[index]))
-                newEvents.Add(e);
+        foreach (Event @event in events) {
+            if ((@event.state == Event.PlayState.Played && eventHistory[index]) || (@event.state != Event.PlayState.Ready && !eventHistory[index]))
+                newEvents.Add(@event);
             index++;
         }
 
