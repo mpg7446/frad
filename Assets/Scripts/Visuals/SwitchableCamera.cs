@@ -10,4 +10,6 @@ public class SwitchableCamera : CryptidUtils
         else
             ConsoleManager.Instance.RegisterCamera(gameObject);
     }
+
+    private void OnDestroy() => ConsoleManager.Instance.DeregisterCamera(gameObject);
 }

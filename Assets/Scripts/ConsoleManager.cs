@@ -21,6 +21,8 @@ public class ConsoleManager : CryptidUtils {
     [SerializeField] private List<GameObject> cameras;
     [SerializeField] private int selectedCamera = 0;
     private int cameraCooldown;
+    public bool CanRender { get {  return cam != null && camRenderer != null && cameraCooldown <= 0; } }
+    public bool CanSpotlight { get { return Spotlight != null; } }
 
     private void Start() {
         // Setup
@@ -42,15 +44,25 @@ public class ConsoleManager : CryptidUtils {
             cameraCooldown--;
     }
 
+    #region Camera / Renderer Registration Handling
     public void RegisterCameraRenderer(GameObject renderer) {
         cam = renderer;
+        Spotlight = cam.transform.Find("Spot Light").gameObject;
         camRenderer = cam.GetComponent<Camera>();
         TransformCamera(cameras[selectedCamera].transform, false);
     }
+    public void DeregisterCameraRenderer(GameObject renderer) {
+        cam = null;
+        Spotlight = null;
+        camRenderer = null;
+    }
+
     public void RegisterCamera(GameObject camera) => cameras.Add(camera);
+    public void DeregisterCamera(GameObject camera) => cameras.Remove(camera);
+    #endregion
 
     public void CycleCamera() {
-        if (cameraCooldown > 0 || !PlayerManager.Instance.lockMovement)
+        if (!CanRender || !PlayerManager.Instance.lockMovement)
             return;
         cameraCooldown = 30;
 
@@ -82,11 +94,13 @@ public class ConsoleManager : CryptidUtils {
     //}
 
     private void TransformCamera(Transform transform, bool light = true) {
-        Spotlight.SetActive(false);
-        StartCoroutine(ToStaticScreen(0.6f));
-        //viewingRobot = false;
-        cam.transform.SetParent(transform, light);
+        StartCoroutine(ToStaticScreen(0.6f, light));
+
+        cam.transform.SetParent(transform);
         cam.transform.SetPositionAndRotation(transform.position, transform.rotation);
+
+        if (light)
+            Spotlight.SetActive(false);
         camRenderer.Render();
     }
 
@@ -99,7 +113,9 @@ public class ConsoleManager : CryptidUtils {
         }
 
         yield return new WaitForSeconds(time);
-        Spotlight.SetActive(light);
+
+        if (PlayerManager.Instance.CurrentStance == PlayerManager.Stance.Console)
+            Spotlight.SetActive(light);
         screenMat.SetTexture("_EmissionMap", screenTexture);
     }
 }

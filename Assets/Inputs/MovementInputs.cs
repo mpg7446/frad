@@ -37,15 +37,6 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""CycleCamera"",
-                    ""type"": ""Button"",
-                    ""id"": ""3ae97a41-9c96-46a7-a5f3-2d91c87de661"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Console"",
                     ""type"": ""Button"",
                     ""id"": ""0dc31bcf-f092-4e18-b5e8-1d464dcf9cf4"",
@@ -131,17 +122,6 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""3f561311-dd2d-4c4c-8e76-a0aca2f8d5fd"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""CycleCamera"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""9eada850-7bb9-4448-b1d5-885f106c280e"",
                     ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
@@ -181,7 +161,6 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
         // Default
         m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
         m_Default_Directional = m_Default.FindAction("Directional", throwIfNotFound: true);
-        m_Default_CycleCamera = m_Default.FindAction("CycleCamera", throwIfNotFound: true);
         m_Default_Console = m_Default.FindAction("Console", throwIfNotFound: true);
         m_Default_Interact = m_Default.FindAction("Interact", throwIfNotFound: true);
         m_Default_Sprint = m_Default.FindAction("Sprint", throwIfNotFound: true);
@@ -247,7 +226,6 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Default;
     private List<IDefaultActions> m_DefaultActionsCallbackInterfaces = new List<IDefaultActions>();
     private readonly InputAction m_Default_Directional;
-    private readonly InputAction m_Default_CycleCamera;
     private readonly InputAction m_Default_Console;
     private readonly InputAction m_Default_Interact;
     private readonly InputAction m_Default_Sprint;
@@ -256,7 +234,6 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
         private @MovementInputs m_Wrapper;
         public DefaultActions(@MovementInputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @Directional => m_Wrapper.m_Default_Directional;
-        public InputAction @CycleCamera => m_Wrapper.m_Default_CycleCamera;
         public InputAction @Console => m_Wrapper.m_Default_Console;
         public InputAction @Interact => m_Wrapper.m_Default_Interact;
         public InputAction @Sprint => m_Wrapper.m_Default_Sprint;
@@ -272,9 +249,6 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
             @Directional.started += instance.OnDirectional;
             @Directional.performed += instance.OnDirectional;
             @Directional.canceled += instance.OnDirectional;
-            @CycleCamera.started += instance.OnCycleCamera;
-            @CycleCamera.performed += instance.OnCycleCamera;
-            @CycleCamera.canceled += instance.OnCycleCamera;
             @Console.started += instance.OnConsole;
             @Console.performed += instance.OnConsole;
             @Console.canceled += instance.OnConsole;
@@ -291,9 +265,6 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
             @Directional.started -= instance.OnDirectional;
             @Directional.performed -= instance.OnDirectional;
             @Directional.canceled -= instance.OnDirectional;
-            @CycleCamera.started -= instance.OnCycleCamera;
-            @CycleCamera.performed -= instance.OnCycleCamera;
-            @CycleCamera.canceled -= instance.OnCycleCamera;
             @Console.started -= instance.OnConsole;
             @Console.performed -= instance.OnConsole;
             @Console.canceled -= instance.OnConsole;
@@ -323,7 +294,6 @@ public partial class @MovementInputs: IInputActionCollection2, IDisposable
     public interface IDefaultActions
     {
         void OnDirectional(InputAction.CallbackContext context);
-        void OnCycleCamera(InputAction.CallbackContext context);
         void OnConsole(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);

@@ -37,13 +37,15 @@ public class EventManager : CryptidUtils {
         List<Event> triggered = new();
 
         for (int i = 0; i < events.Count; i++) {
-            if (events[i].state == Event.PlayState.Ready)
-                continue;
-            triggered.Add(events[i]);
-            Log("Saved triggered event: " + events[i].name);
+            if (events[i].state != Event.PlayState.Ready) {
+                triggered.Add(events[i]);
+                Log("Saved triggered event: " + events[i].name);
+            }
         }
 
-        lastState = new(PlayerManager.Instance.transform, active, enemyLocations, enemyDestinations, triggered); // replace 'new List<Event>()' with a list of triggered events
+        //lastState = new(PlayerManager.Instance.transform, active, enemyLocations, enemyDestinations, triggered); // replace 'new List<Event>()' with a list of triggered events
+        lastState = ScriptableObject.CreateInstance<SaveState>();
+        lastState.Save(PlayerManager.Instance.transform, active, enemyLocations, enemyDestinations, triggered);
     }
 
     [ContextMenu("Rollback Last Save")]
@@ -56,15 +58,15 @@ public class EventManager : CryptidUtils {
 
         Log("lets pretend theres a function here");
         // reset player position
-        PlayerManager.Instance.gameObject.transform.SetPositionAndRotation(lastState.playerPosition, lastState.playerRotation);
+        PlayerManager.Instance.gameObject.transform.SetPositionAndRotation(lastState.PlayerPosition, lastState.PlayerRotation);
         PlayerManager.Instance.agent.ResetPath();
 
         // set enemy positions
-        if (lastState.activeEnemies != null && lastState.activeEnemies.Count > 0) {
-            for (int i = 0; i < lastState.activeEnemies.Count; i++) {
+        if (lastState.ActiveEnemies != null && lastState.ActiveEnemies.Count > 0) {
+            for (int i = 0; i < lastState.ActiveEnemies.Count; i++) {
                 Enemy enemy = Director.Instance.Active[i];
-                enemy.transform.position = lastState.enemyLocations[i];
-                enemy.agent.SetDestination(lastState.enemyDestinations[i]);
+                enemy.transform.position = lastState.EnemyLocations[i];
+                enemy.agent.SetDestination(lastState.EnemyDestinations[i]);
             }
         }
 

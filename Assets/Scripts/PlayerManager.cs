@@ -141,7 +141,7 @@ public class PlayerManager : CryptidUtils {
 
     #region Console
     public void ToggleConsole() {
-        if (console == null)
+        if (console == null || inLocker)
             return;
 
         switch(CurrentStance) {
@@ -175,18 +175,18 @@ public class PlayerManager : CryptidUtils {
 
     #region Interactions
     public void Interact() {
+        // no interactable object is found
         if (lookingAt == null)
             return;
 
+        // attempt interact with object, escape if not in reach / cant be interacted with
         if (!lookingAt.Interact(gameObject))
             return;
 
-        //if (!inLocker && lookingAt is Locker) {
-        //    Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        //    Director.Instance.RegisterPing();
-        //    return;
-        //}
-
+        if (lookingAt is Locker) {
+            inLocker = !inLocker;
+            lockMovement = !inLocker;
+        }
     }
     #endregion
 }

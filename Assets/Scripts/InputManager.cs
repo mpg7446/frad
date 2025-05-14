@@ -21,9 +21,6 @@ public class InputManager : CryptidUtils {
         inputs.Default.Directional.performed += DirectionalPerformed;
         inputs.Default.Directional.canceled += DirectionalCanceled;
 
-        inputs.Default.CycleCamera.performed += CycleCameraPerformed;
-        inputs.Default.CycleCamera.canceled += CycleCameraCanceled;
-
         inputs.Default.Console.performed += ConsonlePerformed;
         inputs.Default.Console.canceled += ConsoleCanceled;
 
@@ -44,13 +41,15 @@ public class InputManager : CryptidUtils {
     }
     private void DirectionalCanceled(InputAction.CallbackContext ctx) => movement = Vector3.zero;
 
-    private void CycleCameraPerformed(InputAction.CallbackContext ctx) => ConsoleManager.Instance.CycleCamera();
-    private void CycleCameraCanceled(InputAction.CallbackContext ctx) { }
-
     private void ConsonlePerformed(InputAction.CallbackContext ctx) => PlayerManager.Instance.ToggleConsole();
     private void ConsoleCanceled(InputAction.CallbackContext ctx) { }
 
-    private void InteractPerformed(InputAction.CallbackContext ctx) => PlayerManager.Instance.Interact();
+    private void InteractPerformed(InputAction.CallbackContext ctx) {
+        if (PlayerManager.Instance.CurrentStance == PlayerManager.Stance.None)
+            PlayerManager.Instance.Interact();
+        else
+            ConsoleManager.Instance.CycleCamera();
+    }
     private void InteractCanceled(InputAction.CallbackContext ctx) { }
 
     private void SprintPerformed(InputAction.CallbackContext ctx) => sprinting = true;

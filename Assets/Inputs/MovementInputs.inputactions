@@ -15,15 +15,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "CycleCamera",
-                    "type": "Button",
-                    "id": "3ae97a41-9c96-46a7-a5f3-2d91c87de661",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Console",
                     "type": "Button",
                     "id": "0dc31bcf-f092-4e18-b5e8-1d464dcf9cf4",
@@ -106,17 +97,6 @@
                     "action": "Directional",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "3f561311-dd2d-4c4c-8e76-a0aca2f8d5fd",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "CycleCamera",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 },
                 {
                     "name": "",

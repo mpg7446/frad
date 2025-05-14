@@ -13,7 +13,7 @@ public class CCTVCam : CryptidUtils {
         get => (fps > 0 ? elapsed > 1f / fps : elapsed > 1) && Random(3);
     }
 
-    void Start() {
+    private void Start() {
         cam = GetComponent<Camera>();
         cam.enabled = false;
 
@@ -23,7 +23,7 @@ public class CCTVCam : CryptidUtils {
             ConsoleManager.Instance.RegisterCameraRenderer(gameObject);
     }
 
-    void Update() {
+    private void Update() {
         elapsed += Time.deltaTime;
         if (IsRenderable) {
             elapsed = 0;
@@ -32,6 +32,9 @@ public class CCTVCam : CryptidUtils {
             cam.enabled = false;
         }
     }
+
+    private void OnDestroy() => ConsoleManager.Instance.DeregisterCameraRenderer(gameObject);
+
     private bool Random(int range) {
         int rng = UnityEngine.Random.Range(0, range-1);
         elapsed = 0;
