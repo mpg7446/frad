@@ -90,7 +90,7 @@ public class PlayerManager : CryptidUtils {
         if (!lockMovement) {
             movement = InputManager.Instance.movement;
             sprinting = InputManager.Instance.sprinting;
-            Step += (Mathf.Abs(movement.x) + Mathf.Abs(movement.z)) / agent.speed; // this needs fixing
+            Step += (Mathf.Abs(movement.x) + Mathf.Abs(movement.z)) / agent.speed;
         } else if (movement != Vector3.zero) {
             movement = Vector3.zero;
             sprinting = false;

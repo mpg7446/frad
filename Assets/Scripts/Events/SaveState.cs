@@ -9,7 +9,7 @@ public class SaveState : ScriptableObject {
     public List<Enemy.ID> ActiveEnemies { get; private set; }
     public List<Vector3> EnemyLocations { get; private set; }
     public List<Vector3> EnemyDestinations { get; private set; }
-    private readonly bool[] eventHistory;
+    public readonly bool[] eventHistory;
 
     public void Save(Transform playerLocation, List<Enemy.ID> activeEnemies, List<Vector3> enemyLocations, List<Vector3> enemyDestinations, List<Event> triggeredEvents) {
         PlayerPosition = playerLocation.position;

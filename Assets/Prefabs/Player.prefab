@@ -13,7 +13,9 @@ GameObject:
   - component: {fileID: 359673314268850159}
   - component: {fileID: 2132432645014043066}
   - component: {fileID: 2527172962876033081}
-  m_Layer: 0
+  - component: {fileID: 5157837193149398822}
+  - component: {fileID: 614069365822110376}
+  m_Layer: 10
   m_Name: Player Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -79,8 +81,8 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
+  m_HDR: 0
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -139,6 +141,83 @@ MonoBehaviour:
   _PostProcessShaderAccurate: {fileID: 4800000, guid: 2ebed186567d3c244a87538744a62920, type: 3}
   _PixelationShader: {fileID: 4800000, guid: f2da0e2a14a532548b5db043244b3df1, type: 3}
   _InterlacingShader: {fileID: 4800000, guid: 03ebd34214b41ef459d7ee6753b062be, type: 3}
+--- !u!114 &5157837193149398822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143129894054681099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 948f4100a11a5c24981795d21301da5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeTrigger: {fileID: 5498735921000909933}
+  volumeLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  stopNaNPropagation: 1
+  finalBlitToCameraTarget: 0
+  antialiasingMode: 0
+  temporalAntialiasing:
+    jitterSpread: 0.75
+    sharpness: 0.25
+    stationaryBlending: 0.95
+    motionBlending: 0.85
+  subpixelMorphologicalAntialiasing:
+    quality: 2
+  fastApproximateAntialiasing:
+    fastMode: 0
+    keepAlpha: 0
+  fog:
+    enabled: 1
+    excludeSkybox: 1
+  debugLayer:
+    lightMeter:
+      width: 512
+      height: 256
+      showCurves: 1
+    histogram:
+      width: 512
+      height: 256
+      channel: 3
+    waveform:
+      exposure: 0.12
+      height: 256
+    vectorscope:
+      size: 256
+      exposure: 0.12
+    overlaySettings:
+      linearDepth: 0
+      motionColorIntensity: 4
+      motionGridSize: 64
+      colorBlindnessType: 0
+      colorBlindnessStrength: 1
+  m_Resources: {fileID: 11400000, guid: d82512f9c8e5d4a4d938b575d47f88d4, type: 2}
+  m_ShowToolkit: 0
+  m_ShowCustomSorter: 0
+  breakBeforeColorGrading: 0
+  m_BeforeTransparentBundles: []
+  m_BeforeStackBundles: []
+  m_AfterStackBundles: []
+--- !u!114 &614069365822110376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143129894054681099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharedProfile: {fileID: 11400000, guid: 0d1bac4ea21bc424cb81e58552c003a2, type: 2}
+  isGlobal: 1
+  blendDistance: 0
+  weight: 1
+  priority: 0
 --- !u!1 &2884797839909938654
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,10 +349,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 942be90f042ed1845b9cb00ac235744d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  intensity: 0.02
-  speed: 0.85
-  delay: 0.2
-  invert: 1
+  intensity: 0.012
+  speed: 4.2
+  delay: 0
+  invert: 0
 --- !u!1 &5116398894572152696
 GameObject:
   m_ObjectHideFlags: 0
@@ -541,15 +620,15 @@ Light:
   m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 63
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
-  m_LightShadowCasterMode: 0
+  m_LightShadowCasterMode: 2
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 9.1835e-41, y: 7.43868e-39, z: 9.78048e-39, w: 9.1835e-41}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -650,6 +729,7 @@ GameObject:
   - component: {fileID: 7917566793297911210}
   - component: {fileID: 2891417658594260220}
   - component: {fileID: 7930546406382496662}
+  - component: {fileID: 4298469169794895264}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -713,12 +793,18 @@ MonoBehaviour:
   cam: {fileID: 8221942002391756223}
   console: {fileID: 8696161468748011957}
   Flashlight: {fileID: 7684552686042928693}
+  agent: {fileID: 0}
   sensitivity: 1
-  speed: 1.5
   maxPitch: 80.4
   minPitch: 31.1
   maxFreeLook: 56
+  speed: 1.2
+  sprintingSpeed: 2
+  maxSprint: 3
+  postProcessing: {fileID: 614069365822110376}
+  maxVignette: 0.7
   lockMovement: 0
+  lookingAt: {fileID: 0}
   CurrentStance: 0
 --- !u!114 &2891417658594260220
 MonoBehaviour:
@@ -738,10 +824,7 @@ MonoBehaviour:
   screenMat: {fileID: 0}
   screenTexture: {fileID: 0}
   switchingTexture: {fileID: 2800000, guid: a2d769d4e72bb0b44a333e58ed5218c9, type: 3}
-  cameras:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  cameras: []
   selectedCamera: 0
 --- !u!195 &7930546406382496662
 NavMeshAgent:
@@ -765,6 +848,33 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!54 &4298469169794895264
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8083975484478980470}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &8221942002391756223
 GameObject:
   m_ObjectHideFlags: 0
@@ -805,12 +915,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8221942002391756223}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 942be90f042ed1845b9cb00ac235744d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  intensity: 0.02
+  intensity: 0.008
   speed: 0.85
   delay: 0
   invert: 1

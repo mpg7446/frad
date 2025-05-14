@@ -10,7 +10,7 @@ public class ViewBobbing : CryptidUtils {
     private Vector3 origin;
     private Vector3 next;
     private float Amount { get {
-            float a = (Mathf.Cos((PlayerManager.Instance.Step - pi / speed / (delay + 1)) * speed) * intensity) + intensity;
+            float a = (Mathf.Cos((PlayerManager.Instance.Step / 100 - (delay * 2)) * speed) * intensity) + intensity;
             return invert ? -a : a;
         } 
     }
