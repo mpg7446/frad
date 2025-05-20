@@ -37,6 +37,7 @@ public class PlayerManager : CryptidUtils {
     private bool sprinting;
     private float sprint;
     private Vector3 movement;
+    public Room room;
 
     // Camera
     [Space]
@@ -53,7 +54,8 @@ public class PlayerManager : CryptidUtils {
     // Interactions
     [Space]
     public InteractableObject lookingAt;
-    private bool inLocker = false;
+    private Locker locker = null;
+    public bool InLocker { get; private set; }
 
     // Animation Stance
     [Space]
@@ -78,6 +80,7 @@ public class PlayerManager : CryptidUtils {
         // Movement
         agent = GetComponent<NavMeshAgent>();
         GameManager.LockCursor();
+        InLocker = false;
     }
     private void OnDestroy() => GameManager.UnlockCursor();
     private void Update() {
@@ -141,7 +144,7 @@ public class PlayerManager : CryptidUtils {
 
     #region Console
     public void ToggleConsole() {
-        if (console == null || inLocker)
+        if (console == null || InLocker)
             return;
 
         switch(CurrentStance) {
@@ -175,6 +178,12 @@ public class PlayerManager : CryptidUtils {
 
     #region Interactions
     public void Interact() {
+        // already in locker, no other interactions possible
+        if (InLocker) {
+            ExitLocker();
+            return;
+        }
+
         // no interactable object is found
         if (lookingAt == null)
             return;
@@ -183,10 +192,41 @@ public class PlayerManager : CryptidUtils {
         if (!lookingAt.Interact(gameObject))
             return;
 
-        if (lookingAt is Locker) {
-            inLocker = !inLocker;
-            lockMovement = !inLocker;
+        if (lookingAt is Locker targetLocker) {
+            EnterLocker(targetLocker);
+            return;
         }
+    }
+
+    private void EnterLocker(Locker targetLocker) {
+        // set agent and internal locker/movement state
+        agent.ResetPath();
+        agent.enabled = false;
+        InLocker = true;
+        lockMovement = true;
+        locker = targetLocker;
+
+        // set rotation & position
+        yaw = locker.transform.eulerAngles.y;
+        freeYaw = locker.transform.eulerAngles.y;
+        transform.SetPositionAndRotation(locker.transform.position, locker.transform.rotation);
+        lockSmoothing = 0;
+
+        // play animation
+    }
+    private void ExitLocker() {
+        // set agent and internal locker/movement state
+        agent.enabled = true;
+        agent.ResetPath();
+        transform.SetPositionAndRotation(locker.exitPosition.transform.position, locker.exitPosition.transform.rotation);
+        locker.ExitLocker();
+
+        // set rotation & position
+        InLocker = false;
+        lockMovement = false;
+        locker = null;
+
+        // play animation
     }
     #endregion
 }

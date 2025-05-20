@@ -7,7 +7,7 @@ public class TestingEnemy : SmartEnemy {
     private float radiusDelay;
     public float detectionTime;
     [SerializeField] private float sprintSpeed;
-    protected override void InitBrain() => brain = ScriptableObject.CreateInstance<Brain>();
+    //protected override void InitBrain() => brain = ScriptableObject.CreateInstance<Brain>();
 
     protected override void OnNone() => Roam();
     protected override void OnRoam() {
@@ -49,5 +49,13 @@ public class TestingEnemy : SmartEnemy {
         base.Chase();
         agent.speed = sprintSpeed;
         //agent.stoppingDistance = 0;
+    }
+
+    protected override void OnTargetRoomChange() {
+        throw new System.NotImplementedException();
+    }
+
+    protected override void OnCurrentRoomChange() {
+        throw new System.NotImplementedException();
     }
 }

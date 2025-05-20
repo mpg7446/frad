@@ -10,15 +10,15 @@ public class CryptidUtils : MonoBehaviour
     protected Vector3 RelPos(Vector3 origin, Vector3 target) => target - origin;
 
     #region DebugLogs
-    protected void LogWarn(string text) => Debug.LogWarning(GetType().ToString() + ": " + text);
+    protected void LogWarn(string text) => Debug.LogWarning($"{GetType()} ({gameObject.name}): {text}");
     protected void LogWarn(char text) => Log(text + "");
     protected void LogWarn(int text) => Log(text + "");
     protected void LogWarn(Exception e) => Log(e + "");
-    protected void LogErr(string text) => Debug.LogError(GetType().ToString() + ": " + text);
+    protected void LogErr(string text) => Debug.LogError($"{GetType()} ({gameObject.name}): {text}");
     protected void LogErr(char text) => Log(text + "");
     protected void LogErr(int text) => Log(text + "");
     protected void LogErr(Exception e) => Log(e + "");
-    protected void Log(string text) => Debug.Log(GetType().ToString() + ": " + text); 
+    protected void Log(string text) => Debug.Log($"{GetType()} ({gameObject.name}): {text}"); 
     protected void Log(char text) => Log(text + "");
     protected void Log(int text) => Log(text + "");
     #endregion

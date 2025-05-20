@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class Locker : InteractableObject
 {
+    public GameObject exitPosition;
     protected override void OnInteract(GameObject sender) {
-        Log("AAAAAAAAAAAAAAAAAAAAA");
+        Collider.enabled = false;
+    }
+
+    public void ExitLocker() {
+        Collider.enabled = true;
     }
 }

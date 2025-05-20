@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(Collider))]
 public abstract class Enemy : CryptidUtils {
     public ID EnemyID;
     public enum ID
@@ -21,10 +22,14 @@ public abstract class Enemy : CryptidUtils {
     [Tooltip("The GameObject target that the AI tries to attack")]
     public GameObject target;
     protected Collider targetCol;
+
     [Tooltip("Base movement speed")]
     [SerializeField] protected float speed;
     [Tooltip("How short of a distance between the AI and the destination for it to stop tracking")]
     [SerializeField] protected float destinationDistance = 0.4f;
+
+    [Tooltip("How many FixedUpdate frames to skip between each AI movement update")]
+    public int fixedStepUpdate;
     private int fixedStep;
     protected bool ReachedDestination { get { return (Vector3.Distance(transform.position, agent.destination) <= destinationDistance) || agent.pathStatus == NavMeshPathStatus.PathPartial || agent.pathStatus == NavMeshPathStatus.PathInvalid; } }
     protected enum State // this will define what the AI is doing
@@ -60,13 +65,10 @@ public abstract class Enemy : CryptidUtils {
     protected virtual void Start() {
         // Nav Mesh Agent
         agent = GetComponent<NavMeshAgent>();
-        if (agent == null)
-            MissingComponent("Missing Nav Mesh Agent!");
+        agent.speed = speed;
 
         // Target Colliders
         targetCol = target.GetComponent<Collider>();
-        if (targetCol == null)
-            MissingComponent("Target is missing collider!");
     }
 
     protected virtual void FixedUpdate() {
@@ -103,10 +105,12 @@ public abstract class Enemy : CryptidUtils {
         Destroy(gameObject);
     }
 
-    protected virtual void None() { state = State.None; }
-    protected virtual void Roam() { state = State.Roam; }
-    protected virtual void Search() { state = State.Search; }
-    protected virtual void Chase() {  state = State.Chase; }
+    #region State Control Methods
+    protected virtual void None() => state = State.None;
+    protected virtual void Roam() => state = State.Roam;
+    protected virtual void Search() => state = State.Search;
+    protected virtual void Chase() => state = State.Chase;
+    #endregion
 
     #region Override Methods
     // These methods are called every FixedUpdate

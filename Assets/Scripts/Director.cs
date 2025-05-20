@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Director : CryptidUtils {
     public static Director Instance;
+    public int intensity = 0;
+
     public List<Enemy> Active { get; private set; }
 
     [Header("NPC Objects")]
@@ -21,6 +23,8 @@ public class Director : CryptidUtils {
             Instance = this;
         else
             Destroy(gameObject, "Instance already exists");
+
+        Active = new();
     }
 
     private GameObject GetNPC(Enemy.ID id) {
@@ -39,20 +43,30 @@ public class Director : CryptidUtils {
         return null;
     }
 
-    public void Spawn(Enemy.ID id, Vector3 location) {
-        GameObject instance = Instantiate(GetNPC(id));
+    public void Spawn(EnemySpawner spawner) {
+        GameObject instance = Instantiate(GetNPC(spawner.EnemyID));
         Active.Add(instance.GetComponent<Enemy>());
-        instance.transform.position = location;
-        try {
-            instance.GetComponent<Enemy>().target = PlayerManager.Instance.gameObject;
-        }
-        catch {
-            instance.GetComponent<FollowingNPC>().target = PlayerManager.Instance.gameObject;
-        }
+        instance.GetComponent<Enemy>().target = PlayerManager.Instance.gameObject;
+
+        instance.transform.SetPositionAndRotation(spawner.setPosition ? spawner.transform.position : instance.transform.position, 
+            spawner.setRotation ? spawner.transform.rotation : instance.transform.rotation);
     }
 
-    public void RegisterPing(float size) { /*
-        foreach (Enemy enemy in Active) {
+    // i spent way too long trying to figure out what i was trying to do here by the comments
+    // i swear i was high or something the fuck is this supposed to mean???
+    public void RegisterPing(Ping ping) {
+        if (Active.Count <= 0)
+            return;
+
+        if (ping.type == Ping.PingType.Locker) {
+            foreach (Enemy enemy in Active) {
+                if (enemy is SmartEnemy e) {
+                    e.RegisterLockerPing(ping.position);
+                }
+            }
+        }
+
+        /*foreach (Enemy enemy in Active) {
             if (enemy is SmartEnemy) {
                 Log("lets just pretend that something happens here");
                 // this is where i watched my parents die parapa
