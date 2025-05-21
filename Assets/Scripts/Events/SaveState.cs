@@ -9,15 +9,16 @@ public class SaveState : ScriptableObject {
     public List<Enemy.ID> ActiveEnemies { get; private set; }
     public List<Vector3> EnemyLocations { get; private set; }
     public List<Vector3> EnemyDestinations { get; private set; }
-    public readonly bool[] eventHistory;
+    public bool[] eventHistory;
 
     public void Save(Transform playerLocation, List<Enemy.ID> activeEnemies, List<Vector3> enemyLocations, List<Vector3> enemyDestinations, List<Event> triggeredEvents) {
         PlayerPosition = playerLocation.position;
         PlayerRotation = playerLocation.rotation;
-        this.ActiveEnemies = activeEnemies;
-        this.EnemyLocations = enemyLocations;
-        this.EnemyDestinations = enemyDestinations;
+        ActiveEnemies = activeEnemies;
+        EnemyLocations = enemyLocations;
+        EnemyDestinations = enemyDestinations;
 
+        eventHistory = new bool[triggeredEvents.Count];
         if (triggeredEvents != null && triggeredEvents.Count > 0) {
             for (int i = 0; i < triggeredEvents.Count; i++) {
                 try {

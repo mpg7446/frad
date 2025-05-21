@@ -197,6 +197,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4971513738340413012}
+  - component: {fileID: 1074785181254263855}
   m_Layer: 0
   m_Name: CCTV Cam
   m_TagString: Untagged
@@ -212,7 +213,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8023519269726206094}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.21342213, y: -0, z: -0, w: 0.9769601}
+  m_LocalRotation: {x: 0.2134226, y: 0, z: 0, w: 0.97696006}
   m_LocalPosition: {x: -16.64, y: 2.67, z: 56.55}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -220,4 +221,16 @@ Transform:
   - {fileID: 270637675446948394}
   - {fileID: 6993019289417378984}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 24.646, y: 0, z: 0}
+--- !u!114 &1074785181254263855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8023519269726206094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33edd6d0fe252384d82bb711c0ee89f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

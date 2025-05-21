@@ -7,20 +7,32 @@ using UnityEngine;
 public abstract class SmartEnemy : Enemy {
     public Room Room;
     protected List<Room> roomBag = new();
-    protected int _roomID = 0;
+    protected int _roomBagIndex = 0;
 
     protected bool watchesLockers;
     protected int lockerValue;
 
+    protected float paranoia; // paranoia increases with close encounters with the player and makes movements more sparattic
+    // should release over time when far enough from player
+
+    // TODO
+    // PLEASE OMG PLEASE add a feature where the AI "dukes" the player by starting to head in one direction and then snapping back to catch the player off gaurd
+    // make this happen after a certain amount of time and/or amount of times the player has escaped the AI
+
+    protected override void Start() {
+        base.Start();
+        gameObject.tag = "Smart Enemy";
+    }
+
     public void ChangeCurrentRoom(Room room) {
-        Log($"Entered new room \"{room.name}\"");
+        //Log($"Entered new room \"{room.name}\"");
         Room = room;
         OnCurrentRoomChange();
     }
 
     public void ChangeTargetRoom() {
-        _roomID++;
-        if (_roomID >= roomBag.Count) {
+        _roomBagIndex++;
+        if (_roomBagIndex >= roomBag.Count) {
             GenerateRoomBag();
             return;
         }
@@ -29,7 +41,7 @@ public abstract class SmartEnemy : Enemy {
     }
 
     protected void GenerateRoomBag() {
-        _roomID = 0;
+        _roomBagIndex = 0;
         roomBag = new();
         foreach (Room room in GameManager.Instance.rooms)
             roomBag.Add(room);
@@ -51,7 +63,7 @@ public abstract class SmartEnemy : Enemy {
             UnityEngine.Random.Range(min.y, max.y), 
             UnityEngine.Random.Range(min.z, max.z));
     }
-    protected Vector3 GetRandomRoomSpot() => GetRandomRoomSpot(roomBag[_roomID]);
+    protected Vector3 GetRandomRoomSpot() => GetRandomRoomSpot(roomBag[_roomBagIndex]);
 
     public void RegisterLockerPing(Vector3 position) {
         if (watchesLockers && (Vector3.Distance(position, transform.position) < detectionRadius * 1.2 || PlayerManager.Instance.room == Room)) {

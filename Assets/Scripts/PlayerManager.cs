@@ -140,6 +140,16 @@ public class PlayerManager : CryptidUtils {
         if (moveForce != Vector3.zero)
             agent.SetDestination(transform.position + moveForce);
     }
+
+    public void ForceMoveTo(Vector3 position, Quaternion rotation) {
+        agent.ResetPath();
+        agent.enabled = false;
+        yaw = rotation.eulerAngles.y;
+        freeYaw = yaw;
+        transform.SetPositionAndRotation(position, rotation);
+        agent.enabled = true;
+    }
+    public void ForceMoveTo(Transform transform) => ForceMoveTo(transform.position, transform.rotation);
     #endregion
 
     #region Console

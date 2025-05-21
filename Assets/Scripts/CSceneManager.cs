@@ -7,8 +7,15 @@ public class CSceneManager : CryptidUtils
 {
     public static CSceneManager Instance;
     private readonly List<Scene> loadedScenes = new();
+    public bool IsPrimaryManager = false;
 
     private void Start() {
+        if (!IsPrimaryManager && Instance == null) {
+            SceneManager.LoadScene("GameManagers", LoadSceneMode.Single);
+            Destroy(this);
+            return;
+        }
+
         if (Instance == null)
             Instance = this;
         else

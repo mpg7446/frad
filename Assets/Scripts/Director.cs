@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Director : CryptidUtils {
     public static Director Instance;
@@ -50,6 +51,7 @@ public class Director : CryptidUtils {
 
         instance.transform.SetPositionAndRotation(spawner.setPosition ? spawner.transform.position : instance.transform.position, 
             spawner.setRotation ? spawner.transform.rotation : instance.transform.rotation);
+        SceneManager.MoveGameObjectToScene(instance, spawner.gameObject.scene);
     }
 
     // i spent way too long trying to figure out what i was trying to do here by the comments

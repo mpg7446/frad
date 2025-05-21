@@ -55,7 +55,8 @@ public class GameManager : CryptidUtils {
         Log("Attempting to set player position");
         
         if (playerSpawners.Count > 0) {
-            player.transform.SetPositionAndRotation(playerSpawners[0].transform.position, playerSpawners[0].setRotation ? playerSpawners[0].transform.rotation : player.transform.rotation);
+            //player.transform.SetPositionAndRotation(playerSpawners[0].transform.position, playerSpawners[0].setRotation ? playerSpawners[0].transform.rotation : player.transform.rotation);
+            PlayerManager.Instance.ForceMoveTo(playerSpawners[0].transform);
             //PlayerManager.Instance.agent.SetDestination(player.transform.position);
         } else
             LogWarn("No PlayerSpawners active, skipping player move");
