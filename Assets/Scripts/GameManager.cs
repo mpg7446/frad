@@ -6,6 +6,8 @@ using UnityEngine.AI;
 public class GameManager : CryptidUtils {
     public static GameManager Instance;
 
+    public bool isPaused = false;
+
     public GameObject player;
     [SerializeField] private List<PlayerSpawner> playerSpawners = new();
     [SerializeField] private List<EnemySpawner> enemySpawners = new();
@@ -23,6 +25,14 @@ public class GameManager : CryptidUtils {
 
         //LoadPlayer();
         LoadNextMap();
+    }
+
+    public void Pause() {
+        isPaused = true;
+    }
+
+    public void Play() {
+        isPaused = false;
     }
 
     #region Loading

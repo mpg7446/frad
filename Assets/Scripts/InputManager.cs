@@ -21,6 +21,9 @@ public class InputManager : CryptidUtils {
         inputs.Default.Directional.performed += DirectionalPerformed;
         inputs.Default.Directional.canceled += DirectionalCanceled;
 
+        inputs.Default.Pause.performed += PausePerformed;
+        inputs.Default.Pause.canceled += PauseCanceled;
+
         inputs.Default.Console.performed += ConsonlePerformed;
         inputs.Default.Console.canceled += ConsoleCanceled;
 
@@ -40,6 +43,17 @@ public class InputManager : CryptidUtils {
         movement = new Vector3(mv.x, 0, mv.y);
     }
     private void DirectionalCanceled(InputAction.CallbackContext ctx) => movement = Vector3.zero;
+
+    private void PausePerformed(InputAction.CallbackContext ctx) { 
+        if (!GameManager.Instance.isPaused) {
+            GameManager.Instance.Pause();
+            Director.Instance.Pause();
+        } else {
+            GameManager.Instance.Play();
+            Director.Instance.Play();
+        }
+    }
+    private void PauseCanceled(InputAction.CallbackContext ctx) { }
 
     private void ConsonlePerformed(InputAction.CallbackContext ctx) => PlayerManager.Instance.ToggleConsole();
     private void ConsoleCanceled(InputAction.CallbackContext ctx) { }

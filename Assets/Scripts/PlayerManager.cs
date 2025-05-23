@@ -1,3 +1,4 @@
+using PSXShaderKit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,6 +27,8 @@ public class PlayerManager : CryptidUtils {
     [Range(0, 90)] 
     public float maxFreeLook = 56;
     private float lockSmoothing = 1;
+    [Range(0,2)] public float pixelationIntensity = 1.534f; // min (0) = 1 | max (2) = 0.01
+    [Range(0,2)] public float ditheringScale = 0;
 
     // movement
     [Space]
@@ -41,10 +44,11 @@ public class PlayerManager : CryptidUtils {
 
     // Camera
     [Space]
-    [Header("Camera")]
+    [Header("Camera / Rendering")]
     public PostProcessVolume postProcessing;
     private Vignette vignette;
-    public float maxVignette;
+    public float maxVignette = 1;
+    public PSXPostProcessEffect PSXPostProcessing;
     public bool lockMovement = false;
     //private bool freeLooking = false;
     private float pitch;
@@ -72,10 +76,12 @@ public class PlayerManager : CryptidUtils {
         if (cam == null)
             cam = transform.Find("Cam").gameObject;
         
-        // Post Processing Vignette
+        // Post Processing
         if (postProcessing == null)
             postProcessing = cam.GetComponent<PostProcessVolume>();
         postProcessing.profile.TryGetSettings(out vignette);
+        if (PSXPostProcessing == null)
+            PSXPostProcessing = cam.GetComponent<PSXPostProcessEffect>();
 
         // Movement
         agent = GetComponent<NavMeshAgent>();
@@ -100,6 +106,28 @@ public class PlayerManager : CryptidUtils {
         }
     }
     private void FixedUpdate() => ApplyMovement();
+
+    private void OnValidate() {
+        UpdateGraphics();
+        if (SettingsManager.hasChanged)
+            UpdateSettings();
+    }
+
+    // TODO please finish this qwq
+    public void UpdateSettings() {
+        sensitivity = SettingsManager.s_sensitivity;
+        maxVignette = SettingsManager.s_maxVignette;
+        pixelationIntensity = SettingsManager.s_pixelationIntensity;
+        ditheringScale = SettingsManager.s_ditheringScale;
+    }
+
+    public void UpdateGraphics() {
+        float pixelValue = (2 - pixelationIntensity) / 2;
+        PSXPostProcessing._PixelationFactor = (float)Math.Clamp(pixelValue, 0.01, 1);
+        float ditherValue = (2 - ditheringScale) / 2;
+        PSXPostProcessing._DitheringScale = (float)Math.Clamp(ditherValue, 0.1, 1);
+        PSXPostProcessing.UpdateValues();
+    }
 
     #region Movement
     private void ApplyRotation() {

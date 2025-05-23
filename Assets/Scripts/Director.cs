@@ -28,6 +28,14 @@ public class Director : CryptidUtils {
         Active = new();
     }
 
+    public void Pause() {
+
+    }
+
+    public void Play() {
+
+    }
+
     private GameObject GetNPC(Enemy.ID id) {
         switch (id) {
             case Enemy.ID.Swarm:

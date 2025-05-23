@@ -21,10 +21,9 @@ namespace PSXShaderKit
             Dither4x4_PS1Pattern = 2
         }
         [Header("Resolution")]
-        [SerializeField]
         [Range(0.0f, 1.0f)]
         [Tooltip("Fakes a low-resolution look by changing how pixel values are sampled. Match with DitheringScale if using Fullscreen_Customizable color emulation.")]
-        private float _PixelationFactor = 1;
+        public float _PixelationFactor = 1;
 
         [Header("Color")]
         [SerializeField]
@@ -39,11 +38,10 @@ namespace PSXShaderKit
         [SerializeField]
         [Tooltip("The matrix size to use when dithering. 4x4 is higher quality with more patterns. The 4x4 matrix with the PS1 pattern is the most accurate but darkens the image compared to the rest.")]
         private DitheringMatrixSize _DitheringMatrixSize = DitheringMatrixSize.Dither4x4_PS1Pattern;
-        [SerializeField]
         [Range(0.0f, 1.0f)]
         [Tooltip("Scales the dithering pattern so that it's more visible at high resolutions. This will look weird as different pixels within the pattern will still have different values. " +
                  "The best way to make the dithering visible is to drop your rendering resolution and display your framebuffer with point filtering.")]
-        private float _DitheringScale = 1;
+        public float _DitheringScale = 1;
 
         [Header("Interlacing")]
         [SerializeField]
@@ -104,7 +102,7 @@ namespace PSXShaderKit
             UpdateValues();
         }
 
-        void UpdateValues()
+        public void UpdateValues()
         {
             Shader.SetGlobalFloat("_PSX_ObjectDithering", _ColorEmulationMode == ColorEmulationMode.PerObject_Accurate ? 1 : 0);
         }

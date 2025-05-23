@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 433faa8b758afed4f9295b193c697276, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _PixelationFactor: 0.223
+  _PixelationFactor: 0.23299998
   _ColorEmulationMode: 1
   _FullscreenColorDepth: {x: 128, y: 128, z: 128}
   _FullscreenDitherDepth: {x: 16, y: 16, z: 16}
@@ -804,6 +804,9 @@ MonoBehaviour:
   room: {fileID: 0}
   postProcessing: {fileID: 614069365822110376}
   maxVignette: 0.7
+  PSXPostProcessing: {fileID: 2527172962876033081}
+  pixelationFactor: 1.534
+  ditheringFactor: 0
   lockMovement: 0
   lookingAt: {fileID: 0}
   CurrentStance: 0
