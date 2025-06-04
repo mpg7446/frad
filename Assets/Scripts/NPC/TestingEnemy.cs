@@ -58,4 +58,12 @@ public class TestingEnemy : SmartEnemy {
     protected override void OnCurrentRoomChange() {
         throw new System.NotImplementedException();
     }
+
+    protected override void OnCollide() {
+        throw new System.NotImplementedException();
+    }
+
+    protected override void StepUpdate() {
+        throw new System.NotImplementedException();
+    }
 }

@@ -6,13 +6,20 @@ public class Husk : SmartEnemy {
     [SerializeField] protected float searchSpeed;
     [SerializeField] protected float chaseSpeed;
 
-    protected int searchTimer = 0;
+    protected int searchCounter = 0;
     protected bool canSearch = true;
     [Tooltip("Amount of times the AI can search through the room")]
     [SerializeField] protected int maxSearchTimer = 3;
     protected bool isProcessing = false;
+    protected float targetViewTimer = 0;
+    [Tooltip("Time (in seconds) the AI has to be able to see the player before chasing")]
+    [SerializeField] protected float targetViewMax = 1f;
 
     #region StepUpdate functions
+    protected override void StepUpdate() {
+        if (targetViewTimer > 0)
+            targetViewTimer -= 0.5f / fixedStepUpdate;
+    }
     protected override void OnNone() {
         Roam();
     }
@@ -28,8 +35,8 @@ public class Husk : SmartEnemy {
     }
     protected override void OnSearch() {
         if (!isProcessing && ReachedDestination) {
-            searchTimer--;
-            if (searchTimer <= 0) {
+            searchCounter--;
+            if (searchCounter <= 0) {
                 Roam();
                 canSearch = false;
                 return;
@@ -42,14 +49,30 @@ public class Husk : SmartEnemy {
         agent.ResetPath();
         isProcessing = true;
         float delay = Random.Range(2f, 6f);
-        Log("Search delay of " + delay);
+        //Log("Search delay of " + delay);
         yield return new WaitForSeconds(delay);
 
         agent.SetDestination(GetRandomRoomSpot());
         isProcessing = false;
     }
 
-    protected override void OnChase() { }
+    protected IEnumerator StartProcessing(float min = 2f, float max = 6f) {
+        isProcessing = true;
+        agent.enabled = false;
+        yield return new WaitForSeconds(Random.Range(min, max));
+        agent.enabled = true;
+        isProcessing = false;
+    }
+
+    protected override void OnChase() {
+        if (!isProcessing) {
+            if (InViewRadius) {
+                agent.SetDestination(target.transform.position);
+            } else if (ReachedDestination) {
+                Roam();
+            }
+        }
+    }
 
     protected override void Detected() {
         if (canSearch && state == State.Roam) {
@@ -58,8 +81,13 @@ public class Husk : SmartEnemy {
         }
     }
     protected override void Seen() {
-        if (isProcessing && state != State.Chase) {
-            Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        if (!isProcessing && state != State.Chase) {
+            targetViewTimer += 1 / fixedStepUpdate;
+            if (targetViewTimer > targetViewMax) {
+                targetViewTimer = 0;
+                StartCoroutine(StartProcessing());
+                Chase();
+            }
         }
     }
     #endregion
@@ -84,13 +112,17 @@ public class Husk : SmartEnemy {
         base.Search();
         Log("Setting state to Search");
         agent.speed = searchSpeed;
-        searchTimer = maxSearchTimer;
+        searchCounter = maxSearchTimer;
         StartCoroutine(ContinueSearch());
     }
 
     protected override void Chase() {
         base.Chase();
         agent.speed = chaseSpeed;
+    }
+
+    protected override void OnCollide() {
+        Log("Husk hit player");
     }
     #endregion
 }

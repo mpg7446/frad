@@ -58,6 +58,23 @@ public class SettingsManager : CryptidUtils
         writer.WriteLine(json);
         writer.Close();
     }
+
+    public void ChangeSensitivity(float value) {
+        s_sensitivity = Mathf.Clamp(value, 0.01f, 4f);
+        hasChanged = true;
+    }
+    public void ChangeVignette(float value) {
+        s_maxVignette = value;
+        hasChanged = true;
+    }
+    public void ChangePixelation(float value) {
+        s_maxVignette = Mathf.Clamp(value, 0.01f, 2);
+        hasChanged = true;
+    }
+    public void ChangeDithering(float value) {
+        s_maxVignette = Mathf.Clamp(value, 0.01f, 2);
+        hasChanged = true;
+    }
 }
 
 [System.Serializable]

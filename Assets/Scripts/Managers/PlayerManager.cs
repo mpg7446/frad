@@ -8,13 +8,14 @@ using UnityEngine.Rendering.PostProcessing;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class PlayerManager : CryptidUtils {
+    public static PlayerManager Instance;
+
     // Objects
     [Header("Objects / Classes")]
     public GameObject cam;
     public GameObject console;
     public GameObject Flashlight;
     public NavMeshAgent agent;
-    public static PlayerManager Instance;
 
     // settings
     [Space]
@@ -50,13 +51,14 @@ public class PlayerManager : CryptidUtils {
     public float maxVignette = 1;
     public PSXPostProcessEffect PSXPostProcessing;
     public bool lockMovement = false;
-    //private bool freeLooking = false;
+    public bool lockCamera = false;
     private float pitch;
     private float yaw;
     private float freeYaw;
 
     // Interactions
     [Space]
+    [Header("Interactions")]
     public InteractableObject lookingAt;
     private Locker locker = null;
     public bool InLocker { get; private set; }
@@ -90,7 +92,8 @@ public class PlayerManager : CryptidUtils {
     }
     private void OnDestroy() => GameManager.UnlockCursor();
     private void Update() {
-        ApplyRotation();
+        if (!lockCamera)
+            ApplyRotation();
 
         // Apply sprinting vignette
         vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, sprinting ? maxVignette : 0, Time.deltaTime / maxSprint);
@@ -113,6 +116,19 @@ public class PlayerManager : CryptidUtils {
             UpdateSettings();
     }
 
+    public void Pause() {
+        lockMovement = true;
+        lockCamera = true;
+        agent.enabled = false;
+    }
+
+    public void Play() {
+        lockMovement = false;
+        lockCamera = false;
+        agent.enabled = true;
+    }
+
+    #region Settings and Rendering
     // TODO please finish this qwq
     public void UpdateSettings() {
         sensitivity = SettingsManager.s_sensitivity;
@@ -128,6 +144,7 @@ public class PlayerManager : CryptidUtils {
         PSXPostProcessing._DitheringScale = (float)Math.Clamp(ditherValue, 0.1, 1);
         PSXPostProcessing.UpdateValues();
     }
+    #endregion
 
     #region Movement
     private void ApplyRotation() {

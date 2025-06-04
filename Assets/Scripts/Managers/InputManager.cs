@@ -44,15 +44,7 @@ public class InputManager : CryptidUtils {
     }
     private void DirectionalCanceled(InputAction.CallbackContext ctx) => movement = Vector3.zero;
 
-    private void PausePerformed(InputAction.CallbackContext ctx) { 
-        if (!GameManager.Instance.isPaused) {
-            GameManager.Instance.Pause();
-            Director.Instance.Pause();
-        } else {
-            GameManager.Instance.Play();
-            Director.Instance.Play();
-        }
-    }
+    private void PausePerformed(InputAction.CallbackContext ctx) => GameManager.Instance.TogglePause();
     private void PauseCanceled(InputAction.CallbackContext ctx) { }
 
     private void ConsonlePerformed(InputAction.CallbackContext ctx) => PlayerManager.Instance.ToggleConsole();

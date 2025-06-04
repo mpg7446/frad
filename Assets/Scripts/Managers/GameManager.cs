@@ -27,12 +27,29 @@ public class GameManager : CryptidUtils {
         LoadNextMap();
     }
 
+    public void TogglePause() {
+        if (!isPaused) {
+            Pause();
+        }
+        else {
+            Play();
+        }
+    }
+
     public void Pause() {
         isPaused = true;
+        UnlockCursor();
+        MenuManager.Instance.OpenPause();
+        PlayerManager.Instance.Pause();
+        Director.Instance.Pause();
     }
 
     public void Play() {
         isPaused = false;
+        LockCursor();
+        MenuManager.Instance.CloseMenus();
+        PlayerManager.Instance.Play();
+        Director.Instance.Play();
     }
 
     #region Loading
