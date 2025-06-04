@@ -54,10 +54,10 @@ public abstract class Enemy : CryptidUtils {
     [Tooltip("LayerMask dictating what layers the line of sight checks")]
     [SerializeField] protected LayerMask raycastMask;
     protected bool InViewRadius { get {
-            Vector3 heading = RelPos(viewObject == null ? transform.position : viewObject.transform.position, targetCol.bounds.center);
-            if (Vector3.Angle(heading, transform.right) <= FOV / 2) {
-                Debug.DrawRay(transform.position, Vector3.ClampMagnitude(heading,viewDistance));
-                if (Physics.Raycast(transform.position, heading, out RaycastHit hit, viewDistance, raycastMask))
+            Vector3 heading = RelPos(viewObject.transform.position, targetCol.bounds.center);
+            if (Vector3.Angle(heading, viewObject.transform.forward) <= FOV / 2) {
+                Debug.DrawRay(viewObject.transform.position, Vector3.ClampMagnitude(heading,viewDistance));
+                if (Physics.Raycast(viewObject.transform.position, heading, out RaycastHit hit, viewDistance, raycastMask))
                     return hit.collider.CompareTag("Player");
             }
             return false;
@@ -78,24 +78,24 @@ public abstract class Enemy : CryptidUtils {
             StepUpdate();
             switch (state) {
                 case State.None:
-                    OnNone();
+                    StepNone();
                     break;
                 case State.Roam:
-                    OnRoam();
+                    StepRoam();
                     break;
                 case State.Search:
-                    OnSearch();
+                    StepSearch();
                     break;
                 case State.Chase:
-                    OnChase();
+                    StepChase();
                     break;
             }
 
             if (InDetectionRadius) {
-                Detected();
+                StepDetected();
             }
             if (InViewRadius) {
-                Seen();
+                StepSeen();
             }
 
             fixedStep = 8;
@@ -114,25 +114,41 @@ public abstract class Enemy : CryptidUtils {
     }
 
     #region State Control Methods
-    protected virtual void None() => state = State.None;
-    protected virtual void Roam() => state = State.Roam;
-    protected virtual void Search() => state = State.Search;
-    protected virtual void Chase() => state = State.Chase;
+    protected void None() {
+        state = State.None;
+        OnNone();
+    }
+    protected void Roam() {
+        state = State.Roam;
+        OnRoam();
+    }
+    protected void Search() {
+        state = State.Search;
+        OnSearch();
+    }
+    protected void Chase() {
+        state = State.Chase;
+        OnChase();
+    }
     #endregion
 
     #region Override Methods
-    // These methods are called every FixedUpdate
+    // Step methods are called every StepUpdate
     // which one is called depends on the State state except for StepUpdate
     // StepUpdate is called before the state update functions
     protected abstract void StepUpdate();
+    protected abstract void StepNone();
+    protected abstract void StepRoam();
+    protected abstract void StepSearch();
+    protected abstract void StepChase();
+    protected abstract void StepDetected();
+    protected abstract void StepSeen();
+
+    // On methods are called on changes to state / collision
     protected abstract void OnNone();
     protected abstract void OnRoam();
     protected abstract void OnSearch();
     protected abstract void OnChase();
-
-    // Entered methods are called OnTriggerEnter depending on object
-    protected abstract void Detected();
-    protected abstract void Seen();
     protected abstract void OnCollide();
     #endregion
 }

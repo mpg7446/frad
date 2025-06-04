@@ -11,19 +11,19 @@ public class Husk : SmartEnemy {
     [Tooltip("Amount of times the AI can search through the room")]
     [SerializeField] protected int maxSearchTimer = 3;
     protected bool isProcessing = false;
-    protected float targetViewTimer = 0;
+    protected int targetViewTimer = 0;
     [Tooltip("Time (in seconds) the AI has to be able to see the player before chasing")]
     [SerializeField] protected float targetViewMax = 1f;
 
     #region StepUpdate functions
     protected override void StepUpdate() {
         if (targetViewTimer > 0)
-            targetViewTimer -= 0.5f / fixedStepUpdate;
+            targetViewTimer -= fixedStepUpdate/2;
     }
-    protected override void OnNone() {
+    protected override void StepNone() {
         Roam();
     }
-    protected override void OnRoam() {
+    protected override void StepRoam() {
         if (ReachedDestination) {
             if (canSearch && !PlayerManager.Instance.InLocker && PlayerManager.Instance.room == Room) {
                 Log("Setting state to Search (In Room)");
@@ -33,7 +33,7 @@ public class Husk : SmartEnemy {
             ChangeTargetRoom();
         }
     }
-    protected override void OnSearch() {
+    protected override void StepSearch() {
         if (!isProcessing && ReachedDestination) {
             searchCounter--;
             if (searchCounter <= 0) {
@@ -64,7 +64,7 @@ public class Husk : SmartEnemy {
         isProcessing = false;
     }
 
-    protected override void OnChase() {
+    protected override void StepChase() {
         if (!isProcessing) {
             if (InViewRadius) {
                 agent.SetDestination(target.transform.position);
@@ -74,16 +74,18 @@ public class Husk : SmartEnemy {
         }
     }
 
-    protected override void Detected() {
+    protected override void StepDetected() {
         if (canSearch && state == State.Roam) {
             Room = PlayerManager.Instance.room;
             Search();
         }
     }
-    protected override void Seen() {
-        if (!isProcessing && state != State.Chase) {
-            targetViewTimer += 1 / fixedStepUpdate;
-            if (targetViewTimer > targetViewMax) {
+    protected override void StepSeen() {
+        Log("target is in view radius");
+        if (state != State.Chase) {
+            Log("updating targetViewTimer");
+            targetViewTimer += fixedStepUpdate;
+            if (targetViewTimer > (50 / fixedStepUpdate) * targetViewMax) {
                 targetViewTimer = 0;
                 StartCoroutine(StartProcessing());
                 Chase();
@@ -102,27 +104,28 @@ public class Husk : SmartEnemy {
             canSearch = true;
     }
 
-    protected override void Roam() {
-        base.Roam();
+    protected override void OnRoam() {
         agent.speed = speed;
         ChangeTargetRoom();
     }
 
-    protected override void Search() {
-        base.Search();
+    protected override void OnSearch() {
         Log("Setting state to Search");
         agent.speed = searchSpeed;
         searchCounter = maxSearchTimer;
         StartCoroutine(ContinueSearch());
     }
 
-    protected override void Chase() {
-        base.Chase();
+    protected override void OnChase() {
         agent.speed = chaseSpeed;
     }
 
     protected override void OnCollide() {
         Log("Husk hit player");
+    }
+
+    protected override void OnNone() {
+        throw new System.NotImplementedException();
     }
     #endregion
 }

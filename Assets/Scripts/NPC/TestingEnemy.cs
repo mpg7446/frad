@@ -9,44 +9,42 @@ public class TestingEnemy : SmartEnemy {
     [SerializeField] private float sprintSpeed;
     //protected override void InitBrain() => brain = ScriptableObject.CreateInstance<Brain>();
 
-    protected override void OnNone() => Roam();
-    protected override void OnRoam() {
+    protected override void StepNone() => OnRoam();
+    protected override void StepRoam() {
         Vector3 loc = target.transform.position;
         loc.x += Random.Range(-20, 20);
         loc.z += Random.Range(-20, 20);
         agent.SetDestination(loc);
         agent.speed = speed;
-        Search();
+        OnSearch();
     }
-    protected override void OnSearch() {
-        if (ReachedDestination) Roam();
+    protected override void StepSearch() {
+        if (ReachedDestination) OnRoam();
     }
-    protected override void OnChase() {
+    protected override void StepChase() {
         agent.SetDestination(target.transform.position);
 
-        if (ReachedDestination) Roam();
+        if (ReachedDestination) OnRoam();
     }
-    protected override void Detected() {
+    protected override void StepDetected() {
         if (state != State.Chase) {
             if (radiusDelay < detectionTime*8){
                 radiusDelay++;
                 return;
             }
             radiusDelay--;
-            Chase();
+            OnChase();
         }
     }
-    protected override void Seen() {
-        if (state != State.Chase) Chase();
+    protected override void StepSeen() {
+        if (state != State.Chase) OnChase();
     }
 
-    protected override void Roam() {
-        base.Roam();
+    protected override void OnRoam() {
         agent.speed = speed;
         //agent.stoppingDistance = 1;
     }
-    protected override void Chase() {
-        base.Chase();
+    protected override void OnChase() {
         agent.speed = sprintSpeed;
         //agent.stoppingDistance = 0;
     }
@@ -64,6 +62,14 @@ public class TestingEnemy : SmartEnemy {
     }
 
     protected override void StepUpdate() {
+        throw new System.NotImplementedException();
+    }
+
+    protected override void OnNone() {
+        throw new System.NotImplementedException();
+    }
+
+    protected override void OnSearch() {
         throw new System.NotImplementedException();
     }
 }
