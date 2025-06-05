@@ -6,10 +6,12 @@ public class MenuManager : MonoBehaviour {
     public static MenuManager Instance;
     public enum Menu {
         None,
+        Main,
         Pause,
         Settings
     }
 
+    [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject settingsMenu;
 
@@ -24,10 +26,12 @@ public class MenuManager : MonoBehaviour {
 
     public void SetValues() {
         _menusList = new() {
+            mainMenu,
             pauseMenu,
             settingsMenu
         };
         _menus = new() {
+            { Menu.Main, mainMenu },
             { Menu.Pause, pauseMenu },
             { Menu.Settings, settingsMenu }
         };
@@ -47,6 +51,7 @@ public class MenuManager : MonoBehaviour {
             obj.SetActive(false);
     }
 
+    public void OpenMain() => OpenMenu(Menu.Main, true);
     public void OpenPause() => OpenMenu(Menu.Pause, true);
     public void OpenSettings() => OpenMenu(Menu.Settings, true);
 }

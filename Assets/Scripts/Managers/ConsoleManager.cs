@@ -71,6 +71,8 @@ public class ConsoleManager : CryptidUtils {
             selectedCamera = 0;
 
         TransformCamera(cameras[selectedCamera].transform);
+
+        PlayerManager.Instance.SetConsoleCameraText(cameras[selectedCamera].name);
     }
 
     // System no longer in use
@@ -112,7 +114,17 @@ public class ConsoleManager : CryptidUtils {
             LogWarn("Failed to access switchingTexture, is it missing?");
         }
 
+        // TODO make this more discrete pls <3
+        PlayerManager.Instance.timer.gameObject.SetActive(false);
+        PlayerManager.Instance.scoreCounter.gameObject.SetActive(false);
+        PlayerManager.Instance.cameraCounter.gameObject.SetActive(false);
+
         yield return new WaitForSeconds(time);
+
+        // TODO make this more discrete pls <3
+        PlayerManager.Instance.timer.gameObject.SetActive(true);
+        PlayerManager.Instance.scoreCounter.gameObject.SetActive(true);
+        PlayerManager.Instance.cameraCounter.gameObject.SetActive(true);
 
         if (PlayerManager.Instance.CurrentStance == PlayerManager.Stance.Console)
             Spotlight.SetActive(light);

@@ -19,6 +19,8 @@ public class Director : CryptidUtils {
     // easter egg / joke NPCs
     [SerializeField] private GameObject fazball;
 
+    private List<GameObject> loadedEnemies = new();
+
     private void Start() {
         if (Instance == null)
             Instance = this;
@@ -60,6 +62,15 @@ public class Director : CryptidUtils {
         instance.transform.SetPositionAndRotation(spawner.setPosition ? spawner.transform.position : instance.transform.position, 
             spawner.setRotation ? spawner.transform.rotation : instance.transform.rotation);
         SceneManager.MoveGameObjectToScene(instance, spawner.gameObject.scene);
+
+        loadedEnemies.Add(instance);
+    }
+
+    public void UnloadEnemies() {
+        foreach (GameObject enemy in loadedEnemies)
+            if (enemy != null)
+                Destroy(enemy);
+        loadedEnemies = new();
     }
 
     // i spent way too long trying to figure out what i was trying to do here by the comments

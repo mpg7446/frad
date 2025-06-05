@@ -121,11 +121,12 @@ public class Husk : SmartEnemy {
     }
 
     protected override void OnCollide() {
-        Log("Husk hit player");
+        if (!PlayerManager.Instance.InLocker) {
+            Log("Husk hit player");
+            PlayerManager.Instance.Damage(damage, damagesPlayerHealth, damagesPlayerHelmet);
+        }
     }
 
-    protected override void OnNone() {
-        throw new System.NotImplementedException();
-    }
+    protected override void OnNone() { }
     #endregion
 }

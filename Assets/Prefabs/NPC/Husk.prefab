@@ -265,6 +265,9 @@ MonoBehaviour:
   target: {fileID: 0}
   speed: 2.8
   destinationDistance: 0.4
+  damage: 100
+  damagesPlayerHealth: 1
+  damagesPlayerHelmet: 0
   fixedStepUpdate: 8
   detectionRadius: 7
   viewObject: {fileID: 1853470685260096858}

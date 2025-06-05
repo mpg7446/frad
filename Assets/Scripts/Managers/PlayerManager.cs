@@ -2,9 +2,12 @@ using PSXShaderKit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class PlayerManager : CryptidUtils {
@@ -56,12 +59,25 @@ public class PlayerManager : CryptidUtils {
     private float yaw;
     private float freeYaw;
 
+    // Console
+    [Space]
+    [Header("Console")]
+    public TextMeshProUGUI timer;
+    public TextMeshProUGUI scoreCounter;
+    public TextMeshProUGUI cameraCounter;
+
     // Interactions
     [Space]
     [Header("Interactions")]
     public InteractableObject lookingAt;
     private Locker locker = null;
     public bool InLocker { get; private set; }
+    private float oxygen = 100;
+    [Tooltip("Time (in seconds) it takes for 1/100th of the players oxygen to deplete per damage taken (or how long to drain at full damagetaken)")]
+    [SerializeField] private float oxygenDrainRate = 1f;
+    private float health = 100;
+    private float damageTaken = 0;
+    public int score = 0;
 
     // Animation Stance
     [Space]
@@ -108,7 +124,13 @@ public class PlayerManager : CryptidUtils {
             sprinting = false;
         }
     }
-    private void FixedUpdate() => ApplyMovement();
+    private void FixedUpdate() {
+        ApplyMovement();
+        UpdateConsoleText();
+
+        if (damageTaken > 0)
+            UpdateOxygen();
+    }
 
     private void OnValidate() {
         UpdateGraphics();
@@ -229,6 +251,15 @@ public class PlayerManager : CryptidUtils {
         ConsoleManager.Instance.Spotlight.SetActive(false);
         Flashlight.SetActive(true);
     }
+
+    public void UpdateConsoleText() {
+        float timeLeft = GameManager.Instance.TimeLeft;
+        timer.text = $"{(int)timeLeft / 60} : {(int)timeLeft % 60}";
+        scoreCounter.text = $"{score} / {GameManager.Instance.maxScore}";
+    }
+    public void SetConsoleCameraText(string cameraName) {
+        cameraCounter.text = $"Camera: {cameraName}";
+    }
     #endregion
 
     #region Interactions
@@ -284,4 +315,25 @@ public class PlayerManager : CryptidUtils {
         // play animation
     }
     #endregion
+
+    public void Damage(float amount, bool affectHealth = true, bool damageHelmet = true) {
+        amount = Mathf.Clamp(amount, 0, 100);
+        
+        if (damageHelmet)
+            damageTaken += amount;
+
+        if (affectHealth)
+            health -= amount;
+
+        if (health <= 0)
+            GameManager.Instance.StopGame();
+    }
+
+    private void UpdateOxygen() {
+        float drain = (damageTaken * Time.fixedDeltaTime) / oxygenDrainRate;
+        oxygen -= drain;
+
+        if (oxygen <= 0)
+            GameManager.Instance.StopGame();
+    }
 }

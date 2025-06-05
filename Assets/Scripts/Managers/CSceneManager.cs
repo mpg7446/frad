@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -33,24 +34,26 @@ public class CSceneManager : CryptidUtils
 
         // unloading exclusive scenes
         if (scene.isExclusive && loadedScenes.Count > 0) {
-            List<Scene> unload = new();
+            UnloadExclusives(scene.exclusiveTag);
+            /*List<Scene> unload = new();
             if (scene.exclusiveTag != null) {
                 int count = 0;
-                foreach(Scene loadedScene in loadedScenes)
+                foreach (Scene loadedScene in loadedScenes)
                     if (loadedScene.exclusiveTag.Equals(scene.exclusiveTag)) {
                         unload.Add(loadedScene);
                         count++;
                     }
                 Log($"Found {count} loaded scenes with matching exclusive tag \"{scene.exclusiveTag}\"");
-            } else {
+            }
+            else {
                 foreach (Scene loadedScene in loadedScenes)
                     if (loadedScene.type == Scene.SceneType.Exclusive)
                         unload.Add(loadedScene);
             }
-            
+
             if (unload.Count > 0)
-                foreach (Scene loadedScene in unload) 
-                    UnloadScene(loadedScene);
+                foreach (Scene loadedScene in unload)
+                    UnloadScene(loadedScene);*/
         }
 
         // load new scene
@@ -62,5 +65,27 @@ public class CSceneManager : CryptidUtils
         if (loadedScenes.Contains(scene))
             loadedScenes.Remove(scene);
         SceneManager.UnloadSceneAsync(SceneManager.GetSceneByName(scene.name).buildIndex);
+    }
+
+    public void UnloadExclusives(string exclusiveTag = null) {
+        List<Scene> unload = new();
+        if (exclusiveTag != null) {
+            int count = 0;
+            foreach (Scene loadedScene in loadedScenes)
+                if (loadedScene.exclusiveTag.Equals(exclusiveTag)) {
+                    unload.Add(loadedScene);
+                    count++;
+                }
+            Log($"Found {count} loaded scenes with matching exclusive tag \"{exclusiveTag}\"");
+        }
+        else {
+            foreach (Scene loadedScene in loadedScenes)
+                if (loadedScene.type == Scene.SceneType.Exclusive)
+                    unload.Add(loadedScene);
+        }
+
+        if (unload.Count > 0)
+            foreach (Scene loadedScene in unload)
+                UnloadScene(loadedScene);
     }
 }

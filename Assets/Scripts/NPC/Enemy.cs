@@ -28,6 +28,12 @@ public abstract class Enemy : CryptidUtils {
     [Tooltip("How short of a distance between the AI and the destination for it to stop tracking")]
     [SerializeField] protected float destinationDistance = 0.4f;
 
+    [Space]
+    [Header("NPC Settings")]
+    [Range(0, 100)]
+    public float damage;
+    public bool damagesPlayerHealth;
+    public bool damagesPlayerHelmet;
     [Tooltip("How many FixedUpdate frames to skip between each AI movement update")]
     public int fixedStepUpdate = 8;
     private int fixedStep;

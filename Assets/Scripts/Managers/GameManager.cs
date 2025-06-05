@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,6 +8,10 @@ public class GameManager : CryptidUtils {
     public static GameManager Instance;
 
     public bool isPaused = false;
+    [Tooltip("Time (in seconds) before extraction")]
+    public float maxTime;
+    public float TimeLeft { get; private set; }
+    public int maxScore;
 
     public GameObject player;
     [SerializeField] private List<PlayerSpawner> playerSpawners = new();
@@ -24,7 +29,15 @@ public class GameManager : CryptidUtils {
             Destroy(gameObject, "Instance already exists");
 
         //LoadPlayer();
-        LoadNextMap();
+        //LoadNextMap();
+        MenuManager.Instance.OpenMain();
+    }
+
+    private void FixedUpdate() {
+        if (TimeLeft > 0)
+            TimeLeft -= Time.fixedDeltaTime;
+        else
+            StopGame();
     }
 
     public void TogglePause() {
@@ -50,6 +63,20 @@ public class GameManager : CryptidUtils {
         MenuManager.Instance.CloseMenus();
         PlayerManager.Instance.Play();
         Director.Instance.Play();
+    }
+
+    public void StartGame() {
+        _mapsIndex = 0;
+        MenuManager.Instance.CloseMenus();
+        LoadNextMap();
+        TimeLeft = maxTime;
+    }
+    public void StopGame() {
+        TimeLeft = 999999; // please change this, this is ridiculous lmao
+        UnloadPlayer();
+        Director.Instance.UnloadEnemies();
+        CSceneManager.Instance.UnloadExclusives();
+        MenuManager.Instance.OpenMain();
     }
 
     #region Loading
@@ -95,6 +122,10 @@ public class GameManager : CryptidUtils {
         //if (enemySpawners.Count > 0)
             foreach (EnemySpawner spawner in enemySpawners)
                 Director.Instance.Spawn(spawner);
+    }
+
+    public void UnloadPlayer() {
+        Destroy(PlayerManager.Instance.gameObject);
     }
     #endregion
 
