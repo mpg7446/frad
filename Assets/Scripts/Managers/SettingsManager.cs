@@ -1,11 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.IO;
 using UnityEngine;
-using Palmmedia.ReportGenerator.Core.Common;
-using Unity.VisualScripting;
 
 public class SettingsManager : CryptidUtils
 {

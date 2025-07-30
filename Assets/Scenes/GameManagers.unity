@@ -2745,8 +2745,6 @@ MonoBehaviour:
   enemySpawners: []
   maps:
   - {fileID: 11400000, guid: 66f3e0f86cc795a4397a312a2607aaa1, type: 2}
-  - {fileID: 11400000, guid: d5b920ca245bdbd4bb0c9e4ae9503f6d, type: 2}
-  - {fileID: 11400000, guid: 919bcd08432a0f2498735b534a84188c, type: 2}
   rooms: []
   maxScore: 0
 --- !u!1 &2135186832

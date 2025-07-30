@@ -18,7 +18,7 @@ public class Husk : SmartEnemy {
     #region StepUpdate functions
     protected override void StepUpdate() {
         if (targetViewTimer > 0)
-            targetViewTimer -= fixedStepUpdate/2;
+            targetViewTimer -= fixedStepRate/2;
     }
     protected override void StepNone() {
         Roam();
@@ -75,7 +75,7 @@ public class Husk : SmartEnemy {
     }
 
     protected override void StepDetected() {
-        if (canSearch && state == State.Roam) {
+        if (!PlayerManager.Instance.InLocker && canSearch && state == State.Roam) {
             Room = PlayerManager.Instance.room;
             Search();
         }
@@ -84,8 +84,8 @@ public class Husk : SmartEnemy {
         Log("target is in view radius");
         if (state != State.Chase) {
             Log("updating targetViewTimer");
-            targetViewTimer += fixedStepUpdate;
-            if (targetViewTimer > (50 / fixedStepUpdate) * targetViewMax) {
+            targetViewTimer += fixedStepRate;
+            if (targetViewTimer > (50 / fixedStepRate) * targetViewMax) {
                 targetViewTimer = 0;
                 StartCoroutine(StartProcessing());
                 Chase();

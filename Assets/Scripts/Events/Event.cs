@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public abstract class Event : CryptidUtils {
     public LayerMask collisionMask;
+    public string collisionTag = "Player";
     public PlayState state = PlayState.Ready;
     public enum PlayState {
         Ready,
@@ -23,12 +24,12 @@ public abstract class Event : CryptidUtils {
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.CompareTag(collisionTag))
             OnEnter();
     }
 
     private void OnTriggerExit(Collider other) {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.CompareTag(collisionTag))
             OnExit();
     }
 

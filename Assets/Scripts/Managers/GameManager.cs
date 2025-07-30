@@ -81,10 +81,10 @@ public class GameManager : CryptidUtils {
         HidePseudoCursor();
         TimeLeft = maxTime;
         isPlaying = true;
+        canExtract = false;
     }
     public void StopGame() {
         isPlaying = false;
-        canExtract = false;
         UnloadPlayer();
         Director.Instance.UnloadEnemies();
         CSceneManager.Instance.UnloadExclusives();

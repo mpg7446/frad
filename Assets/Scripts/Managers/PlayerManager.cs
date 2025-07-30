@@ -261,8 +261,9 @@ public class PlayerManager : CryptidUtils {
     }
 
     public void UpdateConsoleText() {
-        float timeLeft = GameManager.Instance.TimeLeft;
-        timer.text = $"{(int)timeLeft / 60} : {(int)timeLeft % 60}";
+        int minutes = (int)GameManager.Instance.TimeLeft / 60;
+        int seconds = (int)GameManager.Instance.TimeLeft % 60;
+        timer.text = string.Format("Extract: {0:0}:{1:00}", minutes, seconds);
         scoreCounter.text = $"{score} / {GameManager.Instance.maxScore}";
     }
     public void SetConsoleCameraText(string cameraName) {

@@ -35,7 +35,7 @@ public abstract class Enemy : CryptidUtils {
     public bool damagesPlayerHealth;
     public bool damagesPlayerHelmet;
     [Tooltip("How many FixedUpdate frames to skip between each AI movement update")]
-    public int fixedStepUpdate = 8;
+    public int fixedStepRate = 8;
     private int fixedStep;
     protected bool ReachedDestination { get { return (Vector3.Distance(transform.position, agent.destination) <= destinationDistance) || agent.pathStatus == NavMeshPathStatus.PathPartial || agent.pathStatus == NavMeshPathStatus.PathInvalid; } }
     protected enum State // this will define what the AI is doing
