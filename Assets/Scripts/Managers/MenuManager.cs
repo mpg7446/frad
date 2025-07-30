@@ -8,12 +8,14 @@ public class MenuManager : MonoBehaviour {
         None,
         Main,
         Pause,
-        Settings
+        Settings,
+        Overlay
     }
 
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject settingsMenu;
+    [SerializeField] private GameObject overlay;
 
     private List<GameObject> _menusList = new(); // internal list of existing menus, used for closing open menus
     private Dictionary<Menu, GameObject> _menus = new(); // internal dictionary list of existing menus for quick access to menu GameObject using Menu enum
@@ -28,12 +30,14 @@ public class MenuManager : MonoBehaviour {
         _menusList = new() {
             mainMenu,
             pauseMenu,
-            settingsMenu
+            settingsMenu,
+            overlay
         };
         _menus = new() {
             { Menu.Main, mainMenu },
             { Menu.Pause, pauseMenu },
-            { Menu.Settings, settingsMenu }
+            { Menu.Settings, settingsMenu },
+            { Menu.Overlay, overlay }
         };
     }
 
@@ -54,4 +58,5 @@ public class MenuManager : MonoBehaviour {
     public void OpenMain() => OpenMenu(Menu.Main, true);
     public void OpenPause() => OpenMenu(Menu.Pause, true);
     public void OpenSettings() => OpenMenu(Menu.Settings, true);
+    public void OpenOverlay() => OpenMenu(Menu.Overlay, true);
 }

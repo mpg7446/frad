@@ -21,9 +21,9 @@ public class Room : CryptidUtils
         gameObject.isStatic = true;
         transform.name += $" (room.{ID})";
 
-        GameManager.Instance.RegisterRoom(this);
+        GameManager.Instance.Register(this);
     }
-    private void OnDestroy() => GameManager.Instance.DeregisterRoom(this);
+    private void OnDestroy() => GameManager.Instance.Deregister(this);
 
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Player"))

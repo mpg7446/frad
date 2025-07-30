@@ -123,6 +123,14 @@ public class PlayerManager : CryptidUtils {
             movement = Vector3.zero;
             sprinting = false;
         }
+
+        if (GameManager.Instance.isPaused)
+            return;
+
+        if (!GameManager.Instance.isPaused && lookingAt != null && Vector3.Distance(cam.transform.position, lookingAt.transform.position) < lookingAt.maxDistance)
+            GameManager.ShowPseudoCursor();
+        else
+            GameManager.HidePseudoCursor();
     }
     private void FixedUpdate() {
         ApplyMovement();

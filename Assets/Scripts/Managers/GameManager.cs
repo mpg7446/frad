@@ -8,19 +8,24 @@ public class GameManager : CryptidUtils {
     public static GameManager Instance;
 
     public bool isPaused = false;
+    public bool isPlaying = false;
     [Tooltip("Time (in seconds) before extraction")]
     public float maxTime;
+    [Tooltip("Time (in seconds) before extraction finishes")]
+    public float extractionTime;
     public float TimeLeft { get; private set; }
-    public int maxScore;
+    public bool canExtract = false;
 
+    private int _mapsIndex = 0;
     public GameObject player;
+    public GameObject cursor;
+
+    // Registration
     [SerializeField] private List<PlayerSpawner> playerSpawners = new();
     [SerializeField] private List<EnemySpawner> enemySpawners = new();
-
     public List<Scene> maps = new();
-    private int _mapsIndex = 0;
-
     public List<Room> rooms = new();
+    public int maxScore;
 
     private void Start() {
         if (Instance == null)
@@ -34,10 +39,14 @@ public class GameManager : CryptidUtils {
     }
 
     private void FixedUpdate() {
-        if (TimeLeft > 0)
-            TimeLeft -= Time.fixedDeltaTime;
-        else
-            StopGame();
+        if (isPlaying) {
+            if (TimeLeft > -extractionTime) {
+                TimeLeft -= Time.fixedDeltaTime;
+                if (TimeLeft < 0 && canExtract)
+                    StopGame();
+            } else
+                StopGame();
+        }
     }
 
     public void TogglePause() {
@@ -45,7 +54,7 @@ public class GameManager : CryptidUtils {
             Pause();
         }
         else {
-            Play();
+            Unpause();
         }
     }
 
@@ -57,22 +66,25 @@ public class GameManager : CryptidUtils {
         Director.Instance.Pause();
     }
 
-    public void Play() {
+    public void Unpause() {
         isPaused = false;
         LockCursor();
-        MenuManager.Instance.CloseMenus();
+        MenuManager.Instance.OpenOverlay();
         PlayerManager.Instance.Play();
         Director.Instance.Play();
     }
 
     public void StartGame() {
         _mapsIndex = 0;
-        MenuManager.Instance.CloseMenus();
+        MenuManager.Instance.OpenOverlay();
         LoadNextMap();
+        HidePseudoCursor();
         TimeLeft = maxTime;
+        isPlaying = true;
     }
     public void StopGame() {
-        TimeLeft = 999999; // please change this, this is ridiculous lmao
+        isPlaying = false;
+        canExtract = false;
         UnloadPlayer();
         Director.Instance.UnloadEnemies();
         CSceneManager.Instance.UnloadExclusives();
@@ -130,32 +142,36 @@ public class GameManager : CryptidUtils {
     #endregion
 
     #region Registration
-    public void RegisterPlayerSpawner(PlayerSpawner spawner) {
+    public void Register(PlayerSpawner spawner) {
         playerSpawners.Add(spawner);
         Log("Registered new Player Spawner: " + spawner.gameObject.name);
     }
-    public void DeregisterPlayerSpawner(PlayerSpawner spawner) {
+    public void Deregister(PlayerSpawner spawner) {
         playerSpawners.Remove(spawner);
         Log("Deregistered existing Player Spawner: " + spawner.gameObject.name);
     }
 
-    public void RegisterEnemySpawner(EnemySpawner spawner, float checkDelay = 0.2f) {
+    public void Register(EnemySpawner spawner, float checkDelay = 0.2f) {
         enemySpawners.Add(spawner);
         Log("Registered new Enemy Spawner: " + spawner.gameObject.name);
     }
-    public void DeregisterEnemySpawner(EnemySpawner spawner) {
+    public void Deregister(EnemySpawner spawner) {
         enemySpawners.Remove(spawner);
         Log("Deregistered existing Enemy Spawner: " + spawner.gameObject.name);
     }
 
     // uncontrolled handling of array, could possibly lead to unwanted errors.
-    public void RegisterRoom(Room room) {
+    public void Register(Room room) {
         rooms.Add(room);
         Log("Registered new Room: " + room.name);
     }
-    public void DeregisterRoom(Room room) {
+    public void Deregister(Room room) {
         rooms.Remove(room);
         Log("Deregistered existing room: " + room.gameObject.name);
+    }
+
+    public void Register(Valuable valuable) {
+        maxScore += valuable.value;
     }
     #endregion
 
@@ -170,11 +186,11 @@ public class GameManager : CryptidUtils {
     }
 
     // TODO Custom in world cursor for the console
-    public static void UnlockPseudoCursor() {
-
+    public static void ShowPseudoCursor() {
+        Instance.cursor.SetActive(true);
     }
-    public static void LockPseudoCursor() {
-
+    public static void HidePseudoCursor() {
+        Instance.cursor.SetActive(false);
     }
     #endregion
 }

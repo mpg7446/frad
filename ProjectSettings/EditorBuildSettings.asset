@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Circle Room Test Layout.unity
     guid: 0c2f6b51e7659e44db6d799db1f0d9dc
+  - enabled: 1
+    path: Assets/Scenes/greybox main.unity
+    guid: 4f549b2ee637a5947a8cb42d470d8af3
   m_configObjects: {}
