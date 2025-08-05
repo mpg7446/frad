@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class GameManager : CryptidUtils {
     public static GameManager Instance;
@@ -26,6 +24,7 @@ public class GameManager : CryptidUtils {
     public List<Scene> maps = new();
     public List<Room> rooms = new();
     public int maxScore;
+    public int comScore;
 
     private void Start() {
         if (Instance == null)
@@ -43,7 +42,7 @@ public class GameManager : CryptidUtils {
             if (TimeLeft > -extractionTime) {
                 TimeLeft -= Time.fixedDeltaTime;
                 if (TimeLeft < 0 && canExtract)
-                    StopGame();
+                    StopGame(true);
             } else
                 StopGame();
         }
@@ -83,12 +82,20 @@ public class GameManager : CryptidUtils {
         isPlaying = true;
         canExtract = false;
     }
-    public void StopGame() {
+    public void StopGame(bool extracted = false) {
+        if (extracted) { // player successfully extracted
+            MenuManager.Instance.OpenRewards();
+            comScore += PlayerManager.Instance.score;
+        } else { // player failed to extract
+            MenuManager.Instance.OpenMain();
+            InventoryManager.Instance.Clear();
+            comScore = 0;
+        }
+
         isPlaying = false;
         UnloadPlayer();
         Director.Instance.UnloadEnemies();
         CSceneManager.Instance.UnloadExclusives();
-        MenuManager.Instance.OpenMain();
     }
 
     #region Loading

@@ -1,13 +1,9 @@
 using PSXShaderKit;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.PostProcessing;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class PlayerManager : CryptidUtils {

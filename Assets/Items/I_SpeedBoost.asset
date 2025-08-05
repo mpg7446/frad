@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dcc94cd4f2425e458dbb7ac0f077f19, type: 3}
+  m_Name: I_SpeedBoost
+  m_EditorClassIdentifier: 
+  name: Speed Boost
+  description: Increases walking speed but decreases sprint speed
+  speedMultiplier: 1.3
+  sprintSpeedMultiplier: 0.9
+  sprintDurationMultiplier: 1

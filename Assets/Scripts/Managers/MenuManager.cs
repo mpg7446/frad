@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,12 +8,14 @@ public class MenuManager : MonoBehaviour {
         Main,
         Pause,
         Settings,
+        Rewards,
         Overlay
     }
 
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject settingsMenu;
+    [SerializeField] private GameObject rewardsMenu;
     [SerializeField] private GameObject overlay;
 
     private List<GameObject> _menusList = new(); // internal list of existing menus, used for closing open menus
@@ -26,22 +27,24 @@ public class MenuManager : MonoBehaviour {
         CloseMenus();
     }
 
-    public void SetValues() {
+    private void SetValues() {
         _menusList = new() {
             mainMenu,
             pauseMenu,
             settingsMenu,
+            rewardsMenu,
             overlay
         };
         _menus = new() {
             { Menu.Main, mainMenu },
             { Menu.Pause, pauseMenu },
             { Menu.Settings, settingsMenu },
+            { Menu.Rewards, rewardsMenu },
             { Menu.Overlay, overlay }
         };
     }
 
-    public void OpenMenu(Menu menu, bool exclusive = true) {
+    private void OpenMenu(Menu menu, bool exclusive = true) {
         // close existing menus
         if (exclusive)
             CloseMenus();
@@ -50,7 +53,7 @@ public class MenuManager : MonoBehaviour {
         _menus[menu].SetActive(true);
     }
 
-    public void CloseMenus() {
+    private void CloseMenus() {
         foreach (GameObject obj in _menusList)
             obj.SetActive(false);
     }
@@ -58,5 +61,6 @@ public class MenuManager : MonoBehaviour {
     public void OpenMain() => OpenMenu(Menu.Main, true);
     public void OpenPause() => OpenMenu(Menu.Pause, true);
     public void OpenSettings() => OpenMenu(Menu.Settings, true);
+    public void OpenRewards() => OpenMenu(Menu.Rewards, true);
     public void OpenOverlay() => OpenMenu(Menu.Overlay, true);
 }

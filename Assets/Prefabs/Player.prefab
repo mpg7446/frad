@@ -951,7 +951,6 @@ MonoBehaviour:
   lookingAt: {fileID: 0}
   oxygenDrainRate: 5
   score: 0
-  maxScore: 100
   CurrentStance: 0
 --- !u!114 &2891417658594260220
 MonoBehaviour:
