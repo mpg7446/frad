@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0dcc94cd4f2425e458dbb7ac0f077f19, type: 3}
-  m_Name: I_SpeedBoost
+  m_Name: M_SprintDuration
   m_EditorClassIdentifier: 
   ID: 0
-  name: Speed Boost
-  description: <color="green">Increases walking speed </color>but <color="red">decreases
-    sprint speed
+  name: Endurance
+  internalName: m_Endurance
+  description: Increased <color="green">sprint duration</color> with little effect
+    to speed
   type: 0
-  speedMultiplier: 1.3
-  sprintSpeedMultiplier: 0.9
-  sprintDurationMultiplier: 1
+  speedMultiplier: 0.95
+  sprintSpeedMultiplier: 0.8
+  sprintDurationMultiplier: 1.8

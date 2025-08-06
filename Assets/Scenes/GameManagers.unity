@@ -2545,6 +2545,7 @@ MonoBehaviour:
   - {fileID: 0}
   Items:
   - {fileID: 11400000, guid: 6c3524548b7f83d4dbad9d3c1ab32438, type: 2}
+  - {fileID: 11400000, guid: 4f4bc9b87c5517d458ff96b1ab76687a, type: 2}
 --- !u!1 &1092340880
 GameObject:
   m_ObjectHideFlags: 0

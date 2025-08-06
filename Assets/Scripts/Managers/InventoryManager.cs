@@ -9,46 +9,46 @@ public class InventoryManager : CryptidUtils
     public static InventoryManager Instance;
 
     // item storage
-    // if count of items should be changed, please edit SaveData (Save.cs) to fit accordingly
-    // or automate process
     public ScriptableItem[] Inventory = new ScriptableItem[3];
 
     // available items
     [Space]
-    [Header("!!DO NOT REORDER!!")]
-    [Tooltip("List of items, its order dictates save state UUID")]
+    [Header("Item Rolling")]
+    [Tooltip("List of items available in end of game rolls")]
     [SerializeField] private List<ScriptableItem> Items = new();
+    private readonly Dictionary<string, ScriptableItem> _items = new Dictionary<string, ScriptableItem>();
 
     // item selection/rolling
     private readonly ScriptableItem[] rollSlots = new ScriptableItem[3];
     private readonly ItemRollSlot[] rollSlotDisplays = new ItemRollSlot[3];
 
-    public int[] GetInventory() {
-        int[] data = new int[Inventory.Length];
+    public string[] GetInventory() {
+        string[] data = new string[Inventory.Length];
 
         for (int i = 0; i < data.Length; i++) {
             if (Inventory[i] != null)
-                data[i] = Inventory[i].ID;
+                data[i] = Inventory[i].internalName;
             else
-                data[i] = -1;
+                data[i] = null;
         }
 
         return data;
     }
-    public void SetInventory(int[] data) {
+    public void SetInventory(string[] data) {
+        Inventory = new ScriptableItem[data.Length];
+
         for (int i = 0; i < data.Length; i++) {
-            if (data[i] >= 0 && data[i] <= Items.Count)
-                Inventory[i] = Items[data[i]];
+            // no item found
+            if (!string.IsNullOrEmpty(data[i]))
+                Inventory[i] = _items[data[i]];
         }
     }
 
     private void Awake() {
         Instance = this;
 
-        // set ID of available items, used for saving inventory to save file
-        // this method will cause save loading issues if Items list is reordered in any way
-        for (int i = 0; i < Items.Count; i++) {
-            Items[i].ID = i;
+        foreach (ScriptableItem item in Items) {
+            _items.Add(item.internalName, item);
         }
     }
 

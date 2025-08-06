@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 
 public class ItemRollSlot : CryptidUtils {
-    [SerializeField] private TMP_Text name;
+    [SerializeField] private  new TMP_Text name;
     [SerializeField] private TMP_Text description;
     public int id;
 

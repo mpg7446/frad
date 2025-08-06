@@ -4,19 +4,17 @@ using UnityEngine;
 public class ScriptableItem : ScriptableObject
 {
     // TODO - I really dont know how to set this up
-    // possibly need some more time to sketch up ideas/specifics of what I want
-    // items to be and do
+    // possibly need some more time to sketch up ideas/specifics of what I want items to be and do
 
-    public enum ItemType {
+    public enum ItemType { // might use this later to dictate if this is a "passive" or "action" based item
         Modifier,
         Action
     }
 
-    [Tooltip("ID is set automatically by InventoryManager, there is no need to change this")]
-    [HideInInspector] public int ID;
-
     [Space]
-    public string name;
+    public new string name;
+    [Tooltip("Name referenced by internal methods, must be unique")]
+    public string internalName;
     [TextArea]
     public string description;
     public ItemType type = ItemType.Modifier;
