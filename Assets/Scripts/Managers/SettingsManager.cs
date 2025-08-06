@@ -1,8 +1,8 @@
 using System.IO;
 using UnityEngine;
 
-public class SettingsManager : CryptidUtils
-{
+public class SettingsManager : CryptidUtils {
+    // TODO - look into PlayerPrefs as a possible data storage alternative to JsonUtility
     public static SettingsManager Instance;
     private static readonly string filename = Application.dataPath + "/Settings.json";
 
@@ -31,7 +31,7 @@ public class SettingsManager : CryptidUtils
             return;
         }
         TextReader reader = new StreamReader(filename);
-        SettingsData data = JsonUtility.FromJson<SettingsData>(reader.ReadLine());
+        SettingsData data = JsonUtility.FromJson<SettingsData>(reader.ReadToEnd());
         s_sensitivity = data.sensitivity;
         s_maxVignette = data.maxVignette;
         s_pixelationIntensity = data.pixelationIntensity;
@@ -46,13 +46,14 @@ public class SettingsManager : CryptidUtils
             pixelationIntensity = s_pixelationIntensity,
             ditheringScale = s_ditheringScale
         };
-        string json = JsonUtility.ToJson(data);
+        string json = JsonUtility.ToJson(data, true);
 
         TextWriter writer = new StreamWriter(filename, false);
         writer.WriteLine(json);
         writer.Close();
     }
 
+    #region Update Settings - TODO
     public void ChangeSensitivity(float value) {
         s_sensitivity = Mathf.Clamp(value, 0.01f, 4f);
         hasChanged = true;
@@ -69,6 +70,7 @@ public class SettingsManager : CryptidUtils
         s_maxVignette = Mathf.Clamp(value, 0.01f, 2);
         hasChanged = true;
     }
+    #endregion
 }
 
 [System.Serializable]

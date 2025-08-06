@@ -4,7 +4,7 @@ using UnityEngine;
 public class MenuManager : MonoBehaviour {
     public static MenuManager Instance;
     public enum Menu {
-        None,
+        Save,
         Main,
         Pause,
         Settings,
@@ -12,6 +12,11 @@ public class MenuManager : MonoBehaviour {
         Overlay
     }
 
+    [SerializeField] private GameObject menuCamera;
+
+    [Space]
+    [Header("Menus")]
+    [SerializeField] private GameObject saveMenu;
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject settingsMenu;
@@ -27,8 +32,10 @@ public class MenuManager : MonoBehaviour {
         CloseMenus();
     }
 
+    // moved to seperate function in case in needs to be called again - shouldnt need to tho
     private void SetValues() {
         _menusList = new() {
+            saveMenu,
             mainMenu,
             pauseMenu,
             settingsMenu,
@@ -36,6 +43,7 @@ public class MenuManager : MonoBehaviour {
             overlay
         };
         _menus = new() {
+            { Menu.Save, saveMenu },
             { Menu.Main, mainMenu },
             { Menu.Pause, pauseMenu },
             { Menu.Settings, settingsMenu },
@@ -44,13 +52,16 @@ public class MenuManager : MonoBehaviour {
         };
     }
 
-    private void OpenMenu(Menu menu, bool exclusive = true) {
+    private void OpenMenu(Menu menu, bool exclusive = true, bool requireCam = true) {
         // close existing menus
         if (exclusive)
             CloseMenus();
 
         // open selected menu
         _menus[menu].SetActive(true);
+
+        // set camera visibility for menus that require it
+        menuCamera.SetActive(requireCam);
     }
 
     private void CloseMenus() {
@@ -58,9 +69,11 @@ public class MenuManager : MonoBehaviour {
             obj.SetActive(false);
     }
 
+    // button callbacks - information could be set in a different class (similar to saves/settings)
+    public void OpenSaves() => OpenMenu(Menu.Save, true);
     public void OpenMain() => OpenMenu(Menu.Main, true);
-    public void OpenPause() => OpenMenu(Menu.Pause, true);
-    public void OpenSettings() => OpenMenu(Menu.Settings, true);
+    public void OpenPause() => OpenMenu(Menu.Pause, true, false);
+    public void OpenSettings() => OpenMenu(Menu.Settings, true, false);
     public void OpenRewards() => OpenMenu(Menu.Rewards, true);
-    public void OpenOverlay() => OpenMenu(Menu.Overlay, true);
+    public void OpenOverlay() => OpenMenu(Menu.Overlay, true, false);
 }

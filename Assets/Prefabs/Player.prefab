@@ -937,7 +937,7 @@ MonoBehaviour:
   pixelationIntensity: 1.534
   ditheringScale: 0
   speed: 1.2
-  sprintingSpeed: 2
+  sprintMultiplier: 1.8
   maxSprint: 3
   room: {fileID: 0}
   postProcessing: {fileID: 614069365822110376}
@@ -945,9 +945,6 @@ MonoBehaviour:
   PSXPostProcessing: {fileID: 2527172962876033081}
   lockMovement: 0
   lockCamera: 0
-  timer: {fileID: 7383577902050755410}
-  scoreCounter: {fileID: 6270394265081351694}
-  cameraCounter: {fileID: 6036199207950732380}
   lookingAt: {fileID: 0}
   oxygenDrainRate: 5
   score: 0
@@ -970,6 +967,9 @@ MonoBehaviour:
   screenMat: {fileID: 0}
   screenTexture: {fileID: 0}
   switchingTexture: {fileID: 2800000, guid: a2d769d4e72bb0b44a333e58ed5218c9, type: 3}
+  timer: {fileID: 7383577902050755410}
+  scoreCounter: {fileID: 6270394265081351694}
+  cameraCounter: {fileID: 6036199207950732380}
   cameras: []
   selectedCamera: 0
 --- !u!195 &7930546406382496662

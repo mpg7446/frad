@@ -34,7 +34,7 @@ public class PlayerManager : CryptidUtils {
     [Space]
     [Header("Movement")]
     public float speed = 1;
-    public float sprintingSpeed = 2;
+    public float sprintMultiplier = 2;
     [Tooltip("Maximum sprint in seconds")]
     public float maxSprint = 3;
     private bool sprinting;
@@ -54,13 +54,6 @@ public class PlayerManager : CryptidUtils {
     private float pitch;
     private float yaw;
     private float freeYaw;
-
-    // Console
-    [Space]
-    [Header("Console")]
-    public TextMeshProUGUI timer;
-    public TextMeshProUGUI scoreCounter;
-    public TextMeshProUGUI cameraCounter;
 
     // Interactions
     [Space]
@@ -101,6 +94,11 @@ public class PlayerManager : CryptidUtils {
         agent = GetComponent<NavMeshAgent>();
         GameManager.LockCursor();
         InLocker = false;
+        
+        for (int i = 0; i < InventoryManager.Instance.Inventory.Length; i++) {
+            if (InventoryManager.Instance.Inventory[i] != null)
+                ModMovement(InventoryManager.Instance.Inventory[i]);
+        }
     }
     private void OnDestroy() => GameManager.UnlockCursor();
     private void Update() {
@@ -130,7 +128,6 @@ public class PlayerManager : CryptidUtils {
     }
     private void FixedUpdate() {
         ApplyMovement();
-        UpdateConsoleText();
 
         if (damageTaken > 0)
             UpdateOxygen();
@@ -195,21 +192,24 @@ public class PlayerManager : CryptidUtils {
 
         // movement speed
         if (sprinting) {
-            if (sprint < maxSprint) {
-                agent.speed = sprintingSpeed;
+            if (sprint < maxSprint) 
                 sprint += Time.fixedDeltaTime;
-            } else
-                agent.speed = speed;
         } else {
-            agent.speed = speed;
             sprint = Mathf.Clamp(sprint - Time.fixedDeltaTime, 0, maxSprint);
         }
+        agent.speed = sprinting ? speed * sprintMultiplier : speed;
 
             // pane
             Vector3 moveForce = ((cam.transform.forward + transform.forward) / 2) * movement.z + ((cam.transform.right + transform.right) / 2) * movement.x;
         //rb.AddForce(moveForce.normalized * speed * 100, ForceMode.Force);
         if (moveForce != Vector3.zero)
             agent.SetDestination(transform.position + moveForce);
+    }
+
+    public void ModMovement(ScriptableItem item) {
+        speed *= item.speedMultiplier;
+        sprintMultiplier *= item.sprintSpeedMultiplier;
+        maxSprint *= item.sprintDurationMultiplier;
     }
 
     public void ForceMoveTo(Vector3 position, Quaternion rotation) {
@@ -252,19 +252,10 @@ public class PlayerManager : CryptidUtils {
         console.SetActive(false);
         lockMovement = false;
         //DisableFreeLook();
-        ConsoleManager.Instance.Spotlight.SetActive(false);
+        //ConsoleManager.Instance.Spotlight.SetActive(false); - not sure why this is here, flashlight should be handled by PlayerManager
         Flashlight.SetActive(true);
     }
 
-    public void UpdateConsoleText() {
-        int minutes = (int)GameManager.Instance.TimeLeft / 60;
-        int seconds = (int)GameManager.Instance.TimeLeft % 60;
-        timer.text = string.Format("Extract: {0:0}:{1:00}", minutes, seconds);
-        scoreCounter.text = $"{score} / {GameManager.Instance.maxScore}";
-    }
-    public void SetConsoleCameraText(string cameraName) {
-        cameraCounter.text = $"Camera: {cameraName}";
-    }
     #endregion
 
     #region Interactions

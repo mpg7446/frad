@@ -23,7 +23,9 @@ public class GameManager : CryptidUtils {
     [SerializeField] private List<EnemySpawner> enemySpawners = new();
     public List<Scene> maps = new();
     public List<Room> rooms = new();
+    [Tooltip("Maximum possible score given items spawned - generated automatically")]
     public int maxScore;
+    [Tooltip("Accumulative score, set after game has ended")]
     public int comScore;
 
     private void Start() {
@@ -85,6 +87,7 @@ public class GameManager : CryptidUtils {
     public void StopGame(bool extracted = false) {
         if (extracted) { // player successfully extracted
             MenuManager.Instance.OpenRewards();
+            InventoryManager.Instance.Roll();
             comScore += PlayerManager.Instance.score;
         } else { // player failed to extract
             MenuManager.Instance.OpenMain();

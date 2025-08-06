@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class ConsoleManager : CryptidUtils {
     // Objects
@@ -16,6 +18,11 @@ public class ConsoleManager : CryptidUtils {
     [SerializeField] private Material screenMat;
     [SerializeField] private Texture screenTexture;
     [SerializeField] private Texture switchingTexture;
+
+    // Text Fields
+    public TextMeshProUGUI timer;
+    public TextMeshProUGUI scoreCounter;
+    public TextMeshProUGUI cameraCounter;
 
     // Cameras
     [SerializeField] private List<GameObject> cameras;
@@ -42,14 +49,22 @@ public class ConsoleManager : CryptidUtils {
     private void FixedUpdate() {
         if (cameraCooldown > 0)
             cameraCooldown--;
+
+        if (PlayerManager.Instance.console.activeSelf)
+            UpdateConsoleText();
     }
 
     #region Camera / Renderer Registration Handling
     public void RegisterCameraRenderer(GameObject renderer) {
         cam = renderer;
-        Spotlight = cam.transform.Find("Spot Light").gameObject;
         camRenderer = cam.GetComponent<Camera>();
         TransformCamera(cameras[selectedCamera].transform, false);
+
+        try {
+            Spotlight = cam.transform.Find("Spot Light").gameObject;
+        } catch {
+            Spotlight = null;
+        }
     }
     public void DeregisterCameraRenderer(GameObject renderer) {
         cam = null;
@@ -72,7 +87,7 @@ public class ConsoleManager : CryptidUtils {
 
         TransformCamera(cameras[selectedCamera].transform);
 
-        PlayerManager.Instance.SetConsoleCameraText(cameras[selectedCamera].name);
+        SetConsoleCameraText(cameras[selectedCamera].name);
     }
 
     // System no longer in use
@@ -101,7 +116,7 @@ public class ConsoleManager : CryptidUtils {
         cam.transform.SetParent(transform);
         cam.transform.SetPositionAndRotation(transform.position, transform.rotation);
 
-        if (light)
+        if (light && CanSpotlight)
             Spotlight.SetActive(false);
         camRenderer.Render();
     }
@@ -115,19 +130,34 @@ public class ConsoleManager : CryptidUtils {
         }
 
         // TODO make this more discrete pls <3
-        PlayerManager.Instance.timer.gameObject.SetActive(false);
-        PlayerManager.Instance.scoreCounter.gameObject.SetActive(false);
-        PlayerManager.Instance.cameraCounter.gameObject.SetActive(false);
+        timer.gameObject.SetActive(false);
+        scoreCounter.gameObject.SetActive(false);
+        cameraCounter.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(time);
 
         // TODO make this more discrete pls <3
-        PlayerManager.Instance.timer.gameObject.SetActive(true);
-        PlayerManager.Instance.scoreCounter.gameObject.SetActive(true);
-        PlayerManager.Instance.cameraCounter.gameObject.SetActive(true);
+        timer.gameObject.SetActive(true);
+        scoreCounter.gameObject.SetActive(true);
+        cameraCounter.gameObject.SetActive(true);
 
-        if (PlayerManager.Instance.CurrentStance == PlayerManager.Stance.Console)
+        if (PlayerManager.Instance.CurrentStance == PlayerManager.Stance.Console && CanSpotlight)
             Spotlight.SetActive(light);
         screenMat.SetTexture("_EmissionMap", screenTexture);
+    }
+
+    public void UpdateConsoleText() {
+        int minutes = (int)GameManager.Instance.TimeLeft / 60;
+        int seconds = (int)GameManager.Instance.TimeLeft % 60;
+        timer.text = string.Format("Extract: {0:0}:{1:00}", minutes, seconds);
+        scoreCounter.text = $"{PlayerManager.Instance.score} / {GameManager.Instance.maxScore}";
+
+        if (GameManager.Instance.canExtract)
+            timer.color = Color.green;
+        else
+            timer.color = Color.white;
+    }
+    public void SetConsoleCameraText(string cameraName) {
+        cameraCounter.text = $"Camera: {cameraName}";
     }
 }
