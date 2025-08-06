@@ -34,7 +34,7 @@ public class PlayerManager : CryptidUtils {
     [Space]
     [Header("Movement")]
     public float speed = 1;
-    public float sprintMultiplier = 2;
+    public float sprintMod = 2;
     [Tooltip("Maximum sprint in seconds")]
     public float maxSprint = 3;
     private bool sprinting;
@@ -95,9 +95,14 @@ public class PlayerManager : CryptidUtils {
         GameManager.LockCursor();
         InLocker = false;
         
-        for (int i = 0; i < InventoryManager.Instance.Inventory.Length; i++) {
-            if (InventoryManager.Instance.Inventory[i] != null)
-                ModMovement(InventoryManager.Instance.Inventory[i]);
+        //for (int i = 0; i < InventoryManager.Instance.Inventory.Length; i++) {
+        //    if (InventoryManager.Instance.Inventory[i] != null)
+        //        ModMovement(InventoryManager.Instance.Inventory[i]);
+        //}
+
+        foreach (ScriptableItem item in InventoryManager.Instance.Inventory) {
+            if (item != null) 
+                ModMovement(item);
         }
     }
     private void OnDestroy() => GameManager.UnlockCursor();
@@ -106,7 +111,9 @@ public class PlayerManager : CryptidUtils {
             ApplyRotation();
 
         // Apply sprinting vignette
-        vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, sprinting ? maxVignette : 0, Time.deltaTime / maxSprint);
+        vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, sprinting ? maxVignette : 0, Time.fixedDeltaTime / (maxSprint * maxSprint));
+        //if (sprinting)
+        //    Log($"vignette value : ({vignette.intensity.value}/{maxVignette}) ({sprint}/{maxSprint})");
 
         // Update Movement Input from InputManager
         if (!lockMovement) {
@@ -197,10 +204,10 @@ public class PlayerManager : CryptidUtils {
         } else {
             sprint = Mathf.Clamp(sprint - Time.fixedDeltaTime, 0, maxSprint);
         }
-        agent.speed = sprinting ? speed * sprintMultiplier : speed;
+        agent.speed = sprinting ? speed * sprintMod : speed;
 
-            // pane
-            Vector3 moveForce = ((cam.transform.forward + transform.forward) / 2) * movement.z + ((cam.transform.right + transform.right) / 2) * movement.x;
+        // pane
+        Vector3 moveForce = ((cam.transform.forward + transform.forward) / 2) * movement.z + ((cam.transform.right + transform.right) / 2) * movement.x;
         //rb.AddForce(moveForce.normalized * speed * 100, ForceMode.Force);
         if (moveForce != Vector3.zero)
             agent.SetDestination(transform.position + moveForce);
@@ -208,7 +215,7 @@ public class PlayerManager : CryptidUtils {
 
     public void ModMovement(ScriptableItem item) {
         speed *= item.speedMultiplier;
-        sprintMultiplier *= item.sprintSpeedMultiplier;
+        sprintMod *= item.sprintSpeedMultiplier;
         maxSprint *= item.sprintDurationMultiplier;
     }
 

@@ -36,7 +36,7 @@ public class GameManager : CryptidUtils {
 
         //LoadPlayer();
         //LoadNextMap();
-        MenuManager.Instance.OpenMain();
+        MenuManager.Instance.OpenSaves();
     }
 
     private void FixedUpdate() {

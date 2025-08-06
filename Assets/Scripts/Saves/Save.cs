@@ -15,6 +15,13 @@ public class Save : CryptidUtils
             filename = SaveManager.Instance.SaveFolder;
     }
 
+    public void Select() {
+        ReadSave();
+        SaveManager.Instance.SelectSave(this);
+
+        MenuManager.Instance.OpenMain();
+    }
+
     [ContextMenu("Write SaveState Data")]
     public void WriteSave() {
 
