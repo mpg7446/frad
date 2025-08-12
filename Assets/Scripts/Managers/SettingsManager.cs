@@ -4,7 +4,7 @@ using UnityEngine;
 public class SettingsManager : CryptidUtils {
     // TODO - look into PlayerPrefs as a possible data storage alternative to JsonUtility
     public static SettingsManager Instance;
-    private static readonly string filename = Application.dataPath + "/Settings.json";
+    private static string filename;
 
     public static float s_sensitivity = 1;
     public static float s_maxVignette = 1;
@@ -12,6 +12,10 @@ public class SettingsManager : CryptidUtils {
     public static float s_ditheringScale = 0;
 
     public static bool hasChanged = false;
+
+    private void Awake() {
+        filename = Application.persistentDataPath + "/Settings.json";
+    }
 
     private void Start() {
         if (Instance == null)

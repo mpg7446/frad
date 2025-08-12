@@ -25,8 +25,15 @@ public class GameManager : CryptidUtils {
     public List<Room> rooms = new();
     [Tooltip("Maximum possible score given items spawned - generated automatically")]
     public int maxScore;
-    [Tooltip("Accumulative score, set after game has ended")]
+
+    // Accumulative Data
+    [Space]
+    [Header("Accumulative Data")]
     public int comScore;
+    [Tooltip("Time played")]
+    public float comTime;
+    [Tooltip("Times rounds have been completed in this save")]
+    public int comRuns;
 
     private void Start() {
         if (Instance == null)
@@ -34,9 +41,7 @@ public class GameManager : CryptidUtils {
         else
             Destroy(gameObject, "Instance already exists");
 
-        //LoadPlayer();
-        //LoadNextMap();
-        MenuManager.Instance.OpenSaves();
+        MenuManager.Instance.OpenMain();
     }
 
     private void FixedUpdate() {
@@ -89,10 +94,14 @@ public class GameManager : CryptidUtils {
             MenuManager.Instance.OpenRewards();
             InventoryManager.Instance.Roll();
             comScore += PlayerManager.Instance.score;
+            comTime += (TimeLeft - maxTime) + maxTime;
+            comRuns++;
         } else { // player failed to extract
             MenuManager.Instance.OpenMain();
             InventoryManager.Instance.Clear();
             comScore = 0;
+            comTime = 0;
+            comRuns = 0;
         }
 
         isPlaying = false;

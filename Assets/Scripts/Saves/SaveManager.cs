@@ -8,39 +8,43 @@ public class SaveManager : CryptidUtils
 {
     public static SaveManager Instance;
 
-    public string SaveFolder = Application.dataPath + "/Saves/";
+    public string SaveFolder;
     public List<Save> saves;
     public Save selectedSave;
 
+    [Tooltip("Parent Object to instantiate button prefabs to")]
     public GameObject SaveSlots;
+    [Tooltip("Save Slot Button prefab")]
     public GameObject SaveButton;
 
     private void Awake() {
         Instance = this;
+
+        if (string.IsNullOrEmpty(SaveFolder))
+            SaveFolder = Application.persistentDataPath + "/Saves/";
 
         string[] data = Directory.GetFiles(SaveFolder, "*.json");
         saves = new List<Save>();
 
         foreach (string file in data) {
             string trimmed = file.Replace(SaveFolder, "").Replace(".json","");
-
-            GameObject newButton = GameObject.Instantiate(SaveButton);
-            newButton.transform.SetParent(SaveSlots.transform);
-            newButton.GetComponentInChildren<TMP_Text>().text = trimmed;
-            
-            Save newSave = newButton.GetComponent<Save>();
-            newSave.saveID = trimmed;
-            saves.Add(newSave);
+            NewSaveButton(trimmed);
         }
+    }
+
+    private void NewSaveButton(string name) {
+        GameObject newButton = Instantiate(SaveButton);
+        newButton.transform.SetParent(SaveSlots.transform);
+
+        Save newSave = newButton.GetComponent<Save>();
+        newSave.SetData(name);
+        saves.Add(newSave);
     }
 
     public void SelectSave(Save save) {
         selectedSave = save;
     }
-    public void SelectSave(int id) {
-        if (id < 0 || id > saves.Count)
-            return;
 
-        selectedSave = saves[id];
-    }
+    [ContextMenu("Reset Save Path")]
+    public void ResetSavePath() => SaveFolder = Application.persistentDataPath + "/Saves/";
 }
