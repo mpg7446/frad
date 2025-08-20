@@ -1,11 +1,13 @@
 using PSXShaderKit;
 using System;
 using TMPro;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.PostProcessing;
 
 [RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerManager : CryptidUtils {
     public static PlayerManager Instance;
 
@@ -15,6 +17,7 @@ public class PlayerManager : CryptidUtils {
     public GameObject console;
     public GameObject Flashlight;
     public NavMeshAgent agent;
+    public Rigidbody rb;
 
     // settings
     [Space]
@@ -33,6 +36,12 @@ public class PlayerManager : CryptidUtils {
     // movement
     [Space]
     [Header("Movement")]
+    public MovementType movementType = MovementType.Agent;
+    public enum MovementType { Agent, Physics};
+    private Vector3 AverageForward { get {
+            return (cam.transform.forward + transform.forward) / 2;
+        } 
+    }
     public float speed = 1;
     public float sprintMod = 2;
     [Tooltip("Maximum sprint in seconds")]
@@ -92,6 +101,8 @@ public class PlayerManager : CryptidUtils {
 
         // Movement
         agent = GetComponent<NavMeshAgent>();
+        agent.enabled = movementType == MovementType.Agent;
+        rb = GetComponent<Rigidbody>();
         GameManager.LockCursor();
         InLocker = false;
         
@@ -119,7 +130,7 @@ public class PlayerManager : CryptidUtils {
         if (!lockMovement) {
             movement = InputManager.Instance.movement;
             sprinting = InputManager.Instance.sprinting;
-            Step += (Mathf.Abs(movement.x) + Mathf.Abs(movement.z)) / agent.speed;
+            Step += (Mathf.Abs(movement.x) + Mathf.Abs(movement.z)) / speed;
         } else if (movement != Vector3.zero) {
             movement = Vector3.zero;
             sprinting = false;
@@ -134,28 +145,44 @@ public class PlayerManager : CryptidUtils {
             GameManager.HidePseudoCursor();
     }
     private void FixedUpdate() {
-        ApplyMovement();
+        // Movement
+        if (lockMovement)
+            return;
 
-        if (damageTaken > 0)
-            UpdateOxygen();
+        switch (movementType)
+        {
+            case MovementType.Agent:
+                ApplyAgentMovement(); break;
+            case MovementType.Physics:
+                ApplyPhysicsMovement(); break;
+        }
+
+        // TODO - possibly scrap idea??  test it out tho it could be cool
+        //if (damageTaken > 0)
+        //    UpdateOxygen();
     }
 
     private void OnValidate() {
         UpdateGraphics();
         if (SettingsManager.hasChanged)
             UpdateSettings();
+        agent.enabled = movementType == MovementType.Agent;
     }
 
     public void Pause() {
         lockMovement = true;
         lockCamera = true;
-        agent.enabled = false;
+
+        if (movementType == MovementType.Agent)
+            agent.enabled = false;
     }
 
     public void Play() {
         lockMovement = false;
         lockCamera = false;
-        agent.enabled = true;
+
+        if (movementType == MovementType.Agent)
+            agent.enabled = true;
     }
 
     #region Settings and Rendering
@@ -167,6 +194,7 @@ public class PlayerManager : CryptidUtils {
         ditheringScale = SettingsManager.s_ditheringScale;
     }
 
+    // TODO - scale pixelation depending on screen resolution
     public void UpdateGraphics() {
         float pixelValue = (2 - pixelationIntensity) / 2;
         PSXPostProcessing._PixelationFactor = (float)Math.Clamp(pixelValue, 0.01, 1);
@@ -192,25 +220,39 @@ public class PlayerManager : CryptidUtils {
         transform.rotation = Quaternion.Euler(0, yaw, 0);
         cam.transform.localRotation = Quaternion.Euler(pitch, freeYaw - yaw, 0);
     }
-    private void ApplyMovement() {
-        // Escape if fixed in camera view
-        if (lockMovement)
-            return;
-
+    private void ApplyAgentMovement() {
         // movement speed
-        if (sprinting) {
-            if (sprint < maxSprint) 
-                sprint += Time.fixedDeltaTime;
-        } else {
-            sprint = Mathf.Clamp(sprint - Time.fixedDeltaTime, 0, maxSprint);
-        }
+        UpdateSprinting();
         agent.speed = sprinting ? speed * sprintMod : speed;
 
         // pane
-        Vector3 moveForce = ((cam.transform.forward + transform.forward) / 2) * movement.z + ((cam.transform.right + transform.right) / 2) * movement.x;
+        Vector3 moveDir = (AverageForward * movement.z) + (AverageForward * movement.x);
         //rb.AddForce(moveForce.normalized * speed * 100, ForceMode.Force);
-        if (moveForce != Vector3.zero)
-            agent.SetDestination(transform.position + moveForce);
+        if (moveDir != Vector3.zero)
+            agent.SetDestination(transform.position + moveDir);
+    }
+    private void ApplyPhysicsMovement() {
+        UpdateSprinting();
+
+        // Escape if there is no user inputs
+        if (movement == Vector3.zero)
+            return;
+
+        Vector3 moveDir = movement * (sprinting ? speed * sprintMod : speed);
+        moveDir.y = rb.velocity.y;
+        //rb.AddForce(100 * speed * moveDir);
+        rb.velocity = moveDir;
+    }
+    private void UpdateSprinting() {
+        if (sprinting)
+        {
+            if (sprint < maxSprint)
+                sprint += Time.fixedDeltaTime;
+        }
+        else
+        {
+            sprint = Mathf.Clamp(sprint - Time.fixedDeltaTime, 0, maxSprint);
+        }
     }
 
     public void ModMovement(ScriptableItem item) {
@@ -220,12 +262,15 @@ public class PlayerManager : CryptidUtils {
     }
 
     public void ForceMoveTo(Vector3 position, Quaternion rotation) {
-        agent.ResetPath();
-        agent.enabled = false;
+        if (movementType == MovementType.Agent) {
+            agent.ResetPath();
+            agent.enabled = false;
+        }
         yaw = rotation.eulerAngles.y;
         freeYaw = yaw;
         transform.SetPositionAndRotation(position, rotation);
-        agent.enabled = true;
+        if (movementType == MovementType.Agent)
+            agent.enabled = true;
     }
     public void ForceMoveTo(Transform transform) => ForceMoveTo(transform.position, transform.rotation);
     #endregion
@@ -289,8 +334,10 @@ public class PlayerManager : CryptidUtils {
 
     private void EnterLocker(Locker targetLocker) {
         // set agent and internal locker/movement state
-        agent.ResetPath();
-        agent.enabled = false;
+        if (movementType == MovementType.Agent) {
+            agent.ResetPath();
+            agent.enabled = false;
+        }
         InLocker = true;
         lockMovement = true;
         locker = targetLocker;
@@ -305,8 +352,10 @@ public class PlayerManager : CryptidUtils {
     }
     private void ExitLocker() {
         // set agent and internal locker/movement state
-        agent.enabled = true;
-        agent.ResetPath();
+        if (movementType == MovementType.Agent) {
+            agent.enabled = true;
+            agent.ResetPath();
+        }
         transform.SetPositionAndRotation(locker.exitPosition.transform.position, locker.exitPosition.transform.rotation);
         locker.ExitLocker();
 
